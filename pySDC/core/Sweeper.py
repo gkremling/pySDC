@@ -237,15 +237,13 @@ class sweeper(object):
 
         for m in range(1, self.coll.num_nodes + 1):
             # copy u[0] to all collocation nodes, evaluate RHS
-            if self.params.initial_guess == 'spread':
+            if self.params.spread:
                 L.u[m] = P.dtype_u(L.u[0])
                 L.f[m] = P.eval_f(L.u[m], L.time + L.dt * self.coll.nodes[m - 1])
             # start with zero everywhere
-            elif self.params.initial_guess == 'zero':
-                L.u[m] = P.dtype_u(init=P.init, val=0.0)
-                L.f[m] = P.dtype_f(init=P.init, val=0.0)
             else:
-                raise ParameterError(f'initial_guess option {self.params.initial_guess} not implemented')
+                L.u[m] = P.dtype_u(init=P.init, val=0)
+                L.f[m] = P.dtype_f(init=P.init, val=0)
 
         # indicate that this level is now ready for sweeps
         L.status.unlocked = True
@@ -277,17 +275,7 @@ class sweeper(object):
             res_norm.append(abs(res[m]))
 
         # find maximal residual over the nodes
-        if L.params.residual_type == 'full_abs':
-            L.status.residual = max(res_norm)
-        elif L.params.residual_type == 'last_abs':
-            L.status.residual = res_norm[-1]
-        elif L.params.residual_type == 'full_rel':
-            L.status.residual = max(res_norm) / abs(L.u[0])
-        elif L.params.residual_type == 'last_rel':
-            L.status.residual = res_norm[-1] / abs(L.u[0])
-        else:
-            raise ParameterError(f'residual_type = {L.params.residual_type} not implemented, choose '
-                                 f'full_abs, last_abs, full_rel or last_rel instead')
+        L.status.residual = max(res_norm)
 
         # indicate that the residual has seen the new values
         L.status.updated = False
