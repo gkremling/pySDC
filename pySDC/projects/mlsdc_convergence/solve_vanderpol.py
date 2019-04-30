@@ -169,7 +169,7 @@ def solve_vanderpol(m, random_init, niter_arr, nsteps_arr, fname_errors):
 if __name__ == "__main__":    
     # set method params
     m = [7, 4]
-    random_init = False
+    random_init = True
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
     nsteps_arr = [2**i for i in range(4,8)]

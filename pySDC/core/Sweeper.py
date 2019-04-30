@@ -242,8 +242,16 @@ class sweeper(object):
                 L.f[m] = P.eval_f(L.u[m], L.time + L.dt * self.coll.nodes[m - 1])
             # start with zero everywhere
             else:
-                L.u[m] = P.dtype_u(init=P.init, val=0)
-                L.f[m] = P.dtype_f(init=P.init, val=0)
+                # CHANGE: random initial value
+                np.random.seed(m*30)
+                tmp = P.dtype_u(P.init)
+                tmp.values = np.random.rand(P.init)
+                L.u[m] = P.dtype_u(tmp)
+                L.f[m] = P.eval_f(L.u[m], L.time + L.dt * self.coll.nodes[m - 1])
+                
+                # BEFORE: set initial values to 0
+#                L.u[m] = P.dtype_u(init=P.init, val=0)
+#                L.f[m] = P.dtype_f(init=P.init, val=0)
 
         # indicate that this level is now ready for sweeps
         L.status.unlocked = True

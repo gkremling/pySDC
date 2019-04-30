@@ -198,7 +198,7 @@ if __name__ == "__main__":
     
     # set method params
     m = [5, 5]
-    random_init = False
+    random_init = True
     iorder = 10
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
