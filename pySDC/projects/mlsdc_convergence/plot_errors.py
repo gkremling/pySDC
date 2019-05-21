@@ -63,7 +63,7 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
     plt.show()  
     
     if figname:
-        plt.savefig(figname)
+        f.savefig(figname, bbox_inches='tight')
 #        plt.savefig('/home10/kremling/Documents/Studium/Gitte/Master/Seminararbeit/seminararbeit/daten/graphics/{}_{}_errors.png'.format(err['type'], dgl))
         print('figure saved in: {}'.format(figname)) 
     
