@@ -58,7 +58,7 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
 #        if err['type'] == 'MLSDC':
 #            plt.legend(title='lines = k')
 #        else:
-        axes[i].legend()
+        axes[i].legend(numpoints=1, loc="lower left")
     
     plt.show()  
     
@@ -68,4 +68,4 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
         print('figure saved in: {}'.format(figname)) 
     
 if __name__ == "__main__":
-    plot_errors(order_sdc=lambda n: n, oder_mlsdc=lambda n: 2*n)
+    plot_errors(fname_errors="data/errors_heat1d.pickle", figname="figures/errors_heat1d.png", order_sdc=lambda n: n, order_mlsdc=lambda n: n)

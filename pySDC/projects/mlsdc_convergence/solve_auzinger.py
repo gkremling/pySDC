@@ -11,7 +11,7 @@ from math import log
 import numpy as np
 from plot_errors import plot_errors
 
-def solve_auzinger(m, random_init, niter_arr, nsteps_arr, fname_errors):
+def solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_errors):
     """
     Run SDC and MLSDC for auzinger ODE with given parameters
     and compare errors for different numbers of iterations and time steps
@@ -162,7 +162,10 @@ def solve_auzinger(m, random_init, niter_arr, nsteps_arr, fname_errors):
     
     # save results in pickle files (needed to plot results)
     fout = open(fname_errors, "wb")
-    pickle.dump([error_sdc, error_mlsdc], fout)
+    if only_uend:
+        pickle.dump([error_uend_sdc, error_uend_mlsdc], fout)
+    else:
+        pickle.dump([error_sdc, error_mlsdc], fout)
     fout.close()
     
     print("results saved in: {}".format(fname_errors))
@@ -176,10 +179,16 @@ if __name__ == "__main__":
     niter_arr = range(1,6)
     nsteps_arr = [2**i for i in range(1,6)]
     
-    fname_errors = "data/errors_auzinger.pickle"
-    figname = "figures/errors_auzinger.png"
+    only_uend = False
     
-    solve_auzinger(m, random_init, niter_arr, nsteps_arr, fname_errors)
+    if only_uend:
+        fname_errors = "data/errors_auzinger_uend.pickle"
+        figname = "figures/errors_auzinger_uend.png"
+    else:
+        fname_errors = "data/errors_auzinger.pickle"
+        figname = "figures/errors_auzinger.png"
+    
+    solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)
     if random_init:
         plot_errors(fname_errors, figname, order_sdc=lambda n: n, order_mlsdc=lambda n: n)
     else:
