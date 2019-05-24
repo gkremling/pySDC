@@ -11,7 +11,7 @@ from math import log
 import numpy as np
 from plot_errors import plot_errors
 
-def solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, fname_errors):
+def solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, only_uend, fname_errors):
     """
     Run SDC and MLSDC for 1D heat equation with given parameters
     and compare errors for different numbers of iterations and time steps
@@ -82,6 +82,8 @@ def solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, fna
     error_coll_mlsdc = {'type' : 'MLSDC', 'niter_arr' : niter_arr, 'nsteps_arr' : nsteps_arr}
     error_uend_mlsdc = {'type' : 'MLSDC', 'niter_arr' : niter_arr, 'nsteps_arr' : nsteps_arr}
     
+    u_coll = {}    
+    
     # vary number of iterations
     for niter in niter_arr:
         # set number of iterations
@@ -139,17 +141,18 @@ def solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, fna
             print('MLSDC:\tu_ode:\terror: %8.6e\torder:%4.2f' % (err_ode_mlsdc, order_ode_mlsdc))
         
             # compute solution of the collocation problem
-            I_dtQxA = np.eye((m[0]+1)*n[0]) - L_sdc.dt*np.kron(L_sdc.sweep.coll.Qmat, P.A.toarray())
-            u0 = np.kron(np.ones(m[0]+1), uinit.values)
-            u_coll = np.linalg.solve(I_dtQxA, u0)
+            if not nsteps in u_coll:
+                I_dtQxA = np.eye((m[0]+1)*n[0]) - L_sdc.dt*np.kron(L_sdc.sweep.coll.Qmat, P.A.toarray())
+                u0 = np.kron(np.ones(m[0]+1), uinit.values)
+                u_coll[nsteps] = np.linalg.solve(I_dtQxA, u0)
             
             # compute, save and print collocation error and resulting order in dt
-            err_coll_sdc = np.linalg.norm(u_coll - u_num_sdc.flatten(), ord=np.inf)
+            err_coll_sdc = np.linalg.norm(u_coll[nsteps] - u_num_sdc.flatten(), ord=np.inf)
             error_coll_sdc[(niter, nsteps)] = err_coll_sdc
             order_coll_sdc = log(error_coll_sdc[(niter, nsteps_arr[i-1])]/err_coll_sdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
             print('SDC:\tu_coll:\terror: %8.6e\torder:%4.2f' % (err_coll_sdc, order_coll_sdc))
             
-            err_coll_mlsdc = np.linalg.norm(u_coll - u_num_mlsdc.flatten(), ord=np.inf)
+            err_coll_mlsdc = np.linalg.norm(u_coll[nsteps] - u_num_mlsdc.flatten(), ord=np.inf)
             error_coll_mlsdc[(niter, nsteps)] = err_coll_mlsdc
             order_coll_mlsdc = log(error_coll_mlsdc[(niter, nsteps_arr[i-1])]/err_coll_mlsdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
             print('MLSDC:\tu_coll:\terror: %8.6e\torder:%4.2f' % (err_coll_mlsdc, order_coll_mlsdc))
@@ -183,7 +186,10 @@ def solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, fna
     
     # save results in pickle files (needed to plot results)
     fout = open(fname_errors, "wb")
-    pickle.dump([error_coll_sdc, error_coll_mlsdc], fout)
+    if only_uend:
+        pickle.dump([error_uend_sdc, error_uend_mlsdc], fout)
+    else:
+        pickle.dump([error_ode_sdc, error_ode_mlsdc], fout)
     fout.close()
     
     print("results saved in: {}".format(fname_errors))
@@ -196,17 +202,23 @@ if __name__ == "__main__":
     n = [255, 127]
     
     # set method params
-    m = [5, 5]
+    m = [7, 7]
     random_init = True
     iorder = 10
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(14,18)]
+    nsteps_arr = [2**i for i in range(15,19)]
     
-    fname_errors = "data/errors_heat1d.pickle"
-    figname = "figures/errors_heat1d.png"
+    only_uend = False
     
-    solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, fname_errors)
+    if only_uend:
+        fname_errors = "data/errors_heat1d_uend.pickle"
+        figname = "figures/errors_heat1d_uend.png"
+    else:
+        fname_errors = "data/errors_heat1d.pickle"
+        figname = "figures/errors_heat1d.png"
+    
+    solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)
     if random_init:
         plot_errors(fname_errors, figname, order_sdc=lambda n: n, order_mlsdc=lambda n: n)
     else:
