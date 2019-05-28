@@ -207,7 +207,7 @@ if __name__ == "__main__":
     iorder = 10
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(15,19)]
+    nsteps_arr = [2**i for i in range(20,24)] #15,19
     
     only_uend = False
     

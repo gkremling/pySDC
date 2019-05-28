@@ -58,8 +58,8 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
 #        if err['type'] == 'MLSDC':
 #            plt.legend(title='lines = k')
 #        else:
-        axes[i].legend(numpoints=1, loc="lower left")
     
+    axes[0].legend(numpoints=1, loc="lower left")
     plt.show()  
     
     if figname:

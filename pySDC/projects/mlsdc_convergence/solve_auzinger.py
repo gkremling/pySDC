@@ -177,9 +177,9 @@ if __name__ == "__main__":
     random_init = True
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(1,6)]
+    nsteps_arr = [2**i for i in range(2,7)]
     
-    only_uend = False
+    only_uend = True
     
     if only_uend:
         fname_errors = "data/errors_auzinger_uend.pickle"
