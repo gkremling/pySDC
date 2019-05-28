@@ -11,7 +11,7 @@ import numpy as np
 def main():
     # initialize level parameters
     level_params = dict()
-    level_params['restol'] = 1e-14
+    level_params['restol'] = 1e-16
 
     # initialize sweeper parameters
     sweeper_params = dict()
