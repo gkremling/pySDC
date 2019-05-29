@@ -1,8 +1,9 @@
 from pySDC.implementations.collocation_classes.gauss_radau_right import CollGaussRadau_Right
 from pySDC.implementations.problem_classes.Van_der_Pol_implicit import vanderpol
 from pySDC.implementations.sweeper_classes.generic_implicit import generic_implicit
-
 from pySDC.implementations.controller_classes.controller_nonMPI import controller_nonMPI
+
+from pySDC.helpers.stats_helper import filter_stats, sort_stats, get_list_of_types
 
 import pickle
 from math import log
@@ -11,7 +12,7 @@ import numpy as np
 def main():
     # initialize level parameters
     level_params = dict()
-    level_params['restol'] = 1e-16
+    level_params['restol'] = 1e-12
 
     # initialize sweeper parameters
     sweeper_params = dict()
@@ -98,9 +99,30 @@ def main():
         for j, node in enumerate(nodes):
             lsg[nsteps][0].append(L.time+node*L.dt)
             lsg[nsteps][1].append(L.u[j].values)
-            print('t={}\tu={}'.format(L.time+node*L.dt, L.u[j].values))
+#            print('t={}\tu={}'.format(L.time+node*L.dt, L.u[j].values))
+            
+            
+        # filter statistics by first time intervall and type (residual)
+        filtered_stats = filter_stats(stats, time=t0, type='residual_post_iteration')
     
-    print(lsg.values)
+        # sort and convert stats to list, sorted by iteration numbers
+        residuals = sort_stats(filtered_stats, sortby='iter')
+    
+        for item in residuals:
+            out = 'Residual in iteration %2i: %8.4e' % item
+            print(out)
+    
+        # filter statistics by type (number of iterations)
+        filtered_stats = filter_stats(stats, type='niter')
+    
+        # convert filtered statistics to list of iterations count, sorted by time
+        iter_counts = sort_stats(filtered_stats, sortby='time')
+    
+        for item in iter_counts:
+            out = 'Number of iterations at time %4.2f: %2i' % item
+            print(out)
+        
+#        print(lsg.values)
             
     fout = open("data/lsg_vanderpol.pickle", "wb")
     pickle.dump(lsg, fout)

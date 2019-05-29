@@ -173,13 +173,13 @@ def solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_error
 
 if __name__ == "__main__":    
     # set method params
-    m = [7, 4]
+    m = [2, 1]
     random_init = True
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(2,7)]
+    nsteps_arr = [2**i for i in range(3,8)]
     
-    only_uend = True
+    only_uend = False
     
     if only_uend:
         fname_errors = "data/errors_auzinger_uend.pickle"
@@ -190,6 +190,9 @@ if __name__ == "__main__":
     
     solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)
     if random_init:
-        plot_errors(fname_errors, figname, order_sdc=lambda n: n, order_mlsdc=lambda n: n)
+        if not only_uend:
+            plot_errors(fname_errors, figname, order_sdc=lambda n: n if n <= m[0]+1 else m[0]+1, order_mlsdc=lambda n: n if n <= m[0]+1 else m[0]+1)
+        else:
+            plot_errors(fname_errors, figname, order_sdc=lambda n: n, order_mlsdc=lambda n: n)
     else:
         plot_errors(fname_errors, figname, order_sdc=lambda n: n+1, order_mlsdc=lambda n: 2*n+1)
