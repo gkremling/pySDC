@@ -22,12 +22,11 @@ before_install:
   - conda update --yes -n base -c defaults conda
 
 install:
-  - conda install --yes -c conda-forge mpich-mpicc petsc4py mpi4py pyfftw fenics
-  - conda install --yes pip numpy scipy matplotlib nose pep8 coverage sympy dill numba sphinx cython
+  - conda install --yes -c conda-forge mpich-mpicc petsc4py mpi4py fenics=2018.1.0 mpi4py-fft
+  - conda install --yes scipy matplotlib dill numba
+  - conda install --yes pip nose pep8 coverage sphinx
   - conda list
-  - pip install pfft-python
   - pip install travis-sphinx
-  - ln -sf /home/travis/miniconda3/lib/libstdc++.so.6.0.25 /home/travis/miniconda3/lib/libstdc++.so.6
 
 script:
   - "./docs/update_apidocs.sh"
