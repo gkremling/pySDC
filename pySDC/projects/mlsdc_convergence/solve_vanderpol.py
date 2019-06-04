@@ -1,7 +1,7 @@
 # import required classes from pySDC ...
 from pySDC.implementations.collocation_classes.gauss_radau_right import CollGaussRadau_Right
 from pySDC.implementations.problem_classes.Van_der_Pol_implicit import vanderpol
-from pySDC.implementations.sweeper_classes.generic_implicit import generic_implicit
+from sweeper_random_initial_guess import sweeper_random_initial_guess
 from pySDC.implementations.transfer_classes.TransferMesh import mesh_to_mesh
 from pySDC.implementations.controller_classes.controller_nonMPI import controller_nonMPI
 
@@ -25,7 +25,7 @@ def solve_vanderpol(m, random_init, niter_arr, nsteps_arr, only_uend, fname_erro
     sweeper_params_sdc['collocation_class'] = CollGaussRadau_Right
     sweeper_params_sdc['num_nodes'] = m[0]
     sweeper_params_sdc['QI'] = 'IE'
-    sweeper_params_sdc['spread'] = not random_init
+    sweeper_params_sdc['initial_guess'] = 'random' if random_init else 'spread'
     
     sweeper_params_mlsdc = sweeper_params_sdc.copy()
     sweeper_params_mlsdc['num_nodes'] = m
@@ -52,7 +52,7 @@ def solve_vanderpol(m, random_init, niter_arr, nsteps_arr, only_uend, fname_erro
     description_sdc['problem_params'] = problem_params
 #    description_sdc['dtype_u'] = mesh
 #    description_sdc['dtype_f'] = mesh
-    description_sdc['sweeper_class'] = generic_implicit
+    description_sdc['sweeper_class'] = sweeper_random_initial_guess
     description_sdc['sweeper_params'] = sweeper_params_sdc
     
     description_mlsdc = description_sdc.copy()
