@@ -173,11 +173,11 @@ def solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_error
 
 if __name__ == "__main__":    
     # set method params
-    m = [2, 1]
-    random_init = True
+    m = [5,3] #2,1
+    random_init = False
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(3,8)]
+    nsteps_arr = [2**i for i in range(9,14)] #3,8
     
     only_uend = False
     

@@ -242,8 +242,12 @@ class sweeper(object):
                 L.f[m] = P.eval_f(L.u[m], L.time + L.dt * self.coll.nodes[m - 1])
             # start with zero everywhere
             else:
+<<<<<<< HEAD
                 L.u[m] = P.dtype_u(init=P.init, val=0)
                 L.f[m] = P.dtype_f(init=P.init, val=0)
+=======
+                raise ParameterError('initial_guess option {self.params.initial_guess} not implemented')
+>>>>>>> tested some things
 
         # indicate that this level is now ready for sweeps
         L.status.unlocked = True
