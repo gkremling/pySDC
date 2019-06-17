@@ -245,7 +245,7 @@ class sweeper(object):
                 L.u[m] = P.dtype_u(init=P.init, val=0.0)
                 L.f[m] = P.dtype_f(init=P.init, val=0.0)
             else:
-                raise ParameterError(f'initial_guess option {self.params.initial_guess} not implemented')
+                raise ParameterError('initial_guess option {self.params.initial_guess} not implemented')
 
         # indicate that this level is now ready for sweeps
         L.status.unlocked = True

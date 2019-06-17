@@ -198,16 +198,16 @@ def solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, onl
 if __name__ == "__main__":
     # set problem params
     nu = 0.1
-    freq = 24
+    freq = 4 #24
     n = [255, 127]
     
     # set method params
-    m = [7, 7]
-    random_init = True
-    iorder = 10
+    m = [5,5]
+    random_init = False
+    iorder = 4
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(20,24)] #15,19
+    nsteps_arr = [2**i for i in range(7,11)] #15,19
     
     only_uend = False
     
@@ -220,6 +220,9 @@ if __name__ == "__main__":
     
     solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)
     if random_init:
-        plot_errors(fname_errors, figname, order_sdc=lambda n: n, order_mlsdc=lambda n: n)
+        plot_errors(fname_errors, figname, order_sdc=lambda k: k, order_mlsdc=lambda k: k)
     else:
-        plot_errors(fname_errors, figname, order_sdc=lambda n: n+1, order_mlsdc=lambda n: n if n>1 else 2*n+1)
+        # with high frequency
+#        plot_errors(fname_errors, figname, order_sdc=lambda n: n+1, order_mlsdc=lambda n: n if n>1 else 2*n+1)
+        # with low frequency
+        plot_errors(fname_errors, figname, order_sdc=lambda k: k+1, order_mlsdc=lambda k: min(m[0], 2*k+1))
