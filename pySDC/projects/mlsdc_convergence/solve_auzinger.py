@@ -173,11 +173,11 @@ def solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_error
 
 if __name__ == "__main__":    
     # set method params
-    m = [7,5] #2,1
+    m = [5,4] #2,1
     random_init = False
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(3,8)] #3,8
+    nsteps_arr = [2**i for i in range(1,6)] #3,8
     
     only_uend = False
     
@@ -188,11 +188,18 @@ if __name__ == "__main__":
         fname_errors = "data/errors_auzinger.pickle"
         figname = "figures/errors_auzinger.png"
     
+    figname = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_auzinger_initval"
+    
     solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)
     if random_init:
         if not only_uend:
-            plot_errors(fname_errors, figname, order_sdc=lambda n: n if n <= m[0]+1 else m[0]+1, order_mlsdc=lambda n: n if n <= m[0]+1 else m[0]+1)
+            order_sdc = lambda n: min(n, m[0]+1)
+            order_mlsdc = lambda n: min(n,m[0]+1)
         else:
-            plot_errors(fname_errors, figname, order_sdc=lambda n: n, order_mlsdc=lambda n: n)
+            order_sdc = lambda n: n
+            order_mlsdc = lambda n: n
     else:
-        plot_errors(fname_errors, figname, order_sdc=lambda n: n+1, order_mlsdc=lambda n: 2*n+1)
+        order_sdc = lambda n: n+1
+        order_mlsdc = lambda n: min(2*n+1, m[0]+1)
+    
+    plot_errors(fname_errors, figname, order_sdc=order_sdc, order_mlsdc=order_mlsdc)

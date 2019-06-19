@@ -87,5 +87,4 @@ class CollGaussRadau_Right(CollBase):
         nodes = np.concatenate((x, [1.0]))
 
         nodes = (a * (1 - nodes) + b * (1 + nodes)) / 2
-
         return nodes

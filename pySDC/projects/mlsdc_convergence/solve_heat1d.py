@@ -199,15 +199,15 @@ if __name__ == "__main__":
     # set problem params
     nu = 0.1
     freq = 4 #24
-    n = [255, 127]
+    n = [15, 7]
     
     # set method params
     m = [5,5]
     random_init = False
-    iorder = 4
+    iorder = 8
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(7,11)] #15,19
+    nsteps_arr = [2**i for i in range(6,10)] #15,19
     
     only_uend = False
     
@@ -218,11 +218,13 @@ if __name__ == "__main__":
         fname_errors = "data/errors_heat1d.pickle"
         figname = "figures/errors_heat1d.png"
     
+#    figname = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_heat1d_space_spread_dxbig"
+    
     solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)
-    if random_init:
-        plot_errors(fname_errors, figname, order_sdc=lambda k: k, order_mlsdc=lambda k: k)
-    else:
+#    if random_init:
+    plot_errors(fname_errors, figname, order_sdc=lambda k: k+1, order_mlsdc=lambda k: k)
+#    else:
         # with high frequency
 #        plot_errors(fname_errors, figname, order_sdc=lambda n: n+1, order_mlsdc=lambda n: n if n>1 else 2*n+1)
         # with low frequency
-        plot_errors(fname_errors, figname, order_sdc=lambda k: k+1, order_mlsdc=lambda k: min(m[0], 2*k+1))
+#        plot_errors(fname_errors, figname, order_sdc=lambda k: k+1, order_mlsdc=lambda k: min(m[0]+1, 2*k+1))
