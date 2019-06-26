@@ -1,134 +1,18 @@
-import os
-
 import numpy as np
 import pickle
 
+import pySDC.helpers.plot_helper as plt_helper
 from pySDC.helpers.stats_helper import filter_stats, sort_stats
 from pySDC.implementations.collocation_classes.gauss_radau_right import CollGaussRadau_Right
 from pySDC.implementations.controller_classes.controller_nonMPI import controller_nonMPI
-from pySDC.implementations.problem_classes.AllenCahn_2D_FD import allencahn_fullyimplicit
-from pySDC.implementations.problem_classes.AllenCahn_2D_FFT import allencahn2d_imex
+from AllenCahn_1D_FD_homogeneous import allencahn_wave_fullyimplicit
 from pySDC.implementations.sweeper_classes.generic_implicit import generic_implicit
-from pySDC.implementations.sweeper_classes.imex_1st_order import imex_1st_order
-from pySDC.playgrounds.Allen_Cahn.AllenCahn_monitor import monitor
+from pySDC.implementations.sweeper_classes.explicit import explicit
+from pySDC.playgrounds.Allen_Cahn.AllenCahn_monitor_Bayreuth import monitor
+from solve_allencahn import setup_parameters
 
 
-# http://www.personal.psu.edu/qud2/Res/Pre/dz09sisc.pdf
-
-
-def setup_parameters():
-    """
-    Helper routine to fill in all relevant parameters
-
-    Note that this file will be used for all versions of SDC, containing more than necessary for each individual run
-
-    Returns:
-        description (dict)
-        controller_params (dict)
-    """
-
-    # initialize level parameters
-    level_params = dict()
-    level_params['restol'] = 1E-11
-    level_params['dt'] = 1E-05
-    level_params['nsweeps'] = [1]
-
-    # initialize sweeper parameters
-    sweeper_params = dict()
-    sweeper_params['collocation_class'] = CollGaussRadau_Right
-    sweeper_params['num_nodes'] = [5]
-    sweeper_params['QI'] = ['LU']
-    sweeper_params['spread'] = False
-
-    # This comes as read-in for the problem class
-    problem_params = dict()
-    problem_params['nu'] = 2
-    problem_params['nvars'] = [(128, 128)]
-    problem_params['eps'] = [0.04]
-    problem_params['newton_maxiter'] = 100
-    problem_params['newton_tol'] = 1E-12
-    problem_params['lin_tol'] = 1E-12
-    problem_params['lin_maxiter'] = 100
-    problem_params['radius'] = 0.25
-
-    # initialize step parameters
-    step_params = dict()
-    step_params['maxiter'] = 50
-
-    # initialize controller parameters
-    controller_params = dict()
-    controller_params['logger_level'] = 20
-    # controller_params['hook_class'] = monitor
-
-    # fill description dictionary for easy step instantiation
-    description = dict()
-    description['problem_class'] = allencahn_fullyimplicit  # pass problem class
-    description['problem_params'] = problem_params  # pass problem parameters
-    description['sweeper_class'] = generic_implicit  # pass sweeper (see part B)
-    description['sweeper_params'] = sweeper_params  # pass sweeper parameters
-    description['level_params'] = level_params  # pass level parameters
-    description['step_params'] = step_params  # pass step parameters
-
-    return description, controller_params
-
-
-def setup_parameters_FFT():
-    """
-    Helper routine to fill in all relevant parameters
-
-    Note that this file will be used for all versions of SDC, containing more than necessary for each individual run
-
-    Returns:
-        description (dict)
-        controller_params (dict)
-    """
-
-    # initialize level parameters
-    level_params = dict()
-    level_params['restol'] = 1E-11
-    level_params['dt'] = 1E-04
-    level_params['nsweeps'] = [1]
-
-    # initialize sweeper parameters
-    sweeper_params = dict()
-    sweeper_params['collocation_class'] = CollGaussRadau_Right
-    sweeper_params['num_nodes'] = [5]
-    sweeper_params['QI'] = ['LU']
-    sweeper_params['spread'] = False
-
-    # This comes as read-in for the problem class
-    problem_params = dict()
-    problem_params['nu'] = 2
-    problem_params['nvars'] = [(128, 128)]
-    problem_params['eps'] = [0.04]
-    problem_params['newton_maxiter'] = 100
-    problem_params['newton_tol'] = 1E-12
-    problem_params['lin_tol'] = 1E-12
-    problem_params['lin_maxiter'] = 100
-    problem_params['radius'] = 0.25
-
-    # initialize step parameters
-    step_params = dict()
-    step_params['maxiter'] = 50
-
-    # initialize controller parameters
-    controller_params = dict()
-    controller_params['logger_level'] = 30
-#    controller_params['hook_class'] = monitor
-
-    # fill description dictionary for easy step instantiation
-    description = dict()
-    description['problem_class'] = allencahn2d_imex  # pass problem class
-    description['problem_params'] = problem_params  # pass problem parameters
-    description['sweeper_class'] = imex_1st_order  # pass sweeper (see part B)
-    description['sweeper_params'] = sweeper_params  # pass sweeper parameters
-    description['level_params'] = level_params  # pass level parameters
-    description['step_params'] = step_params  # pass step parameters
-
-    return description, controller_params
-
-
-def run_reference(nsteps_arr):
+def run_reference(nsteps_arr, nnodes, nvars, radius=0.25, eps=0.04):
     """
     Routine to run particular SDC variant
 
@@ -136,8 +20,8 @@ def run_reference(nsteps_arr):
         Tend (float): end time for dumping
     """
 
-    # load (incomplete) default parameters
-    description, controller_params = setup_parameters_FFT()
+    # load default parameters
+    description, controller_params = setup_parameters(restol=1E-10, maxiter=50, initial_guess='zero', m=nnodes, n=nvars, radius=radius, eps=eps)
 
     # setup parameters "in time"
     t0 = 0.
@@ -173,9 +57,28 @@ def run_reference(nsteps_arr):
         for j, node in enumerate(nodes):
             lsg[nsteps][0].append(L.time+node*L.dt)
             lsg[nsteps][1].append(L.u[j].values)
-            print('t={}\tu={}'.format(L.time+node*L.dt, L.u[j].values))
+#            print('t={}\tu={}'.format(L.time+node*L.dt, L.u[j].values))
+            
+            
+        # filter statistics by first time intervall and type (residual)
+        filtered_stats = filter_stats(stats, time=t0, type='residual_post_iteration')
     
-    print(lsg.values)
+        # sort and convert stats to list, sorted by iteration numbers
+        residuals = sort_stats(filtered_stats, sortby='iter')
+    
+        for item in residuals:
+            out = 'Residual in iteration %2i: %8.4e' % item
+            print(out)
+    
+        # filter statistics by type (number of iterations)
+        filtered_stats = filter_stats(stats, type='niter')
+    
+        # convert filtered statistics to list of iterations count, sorted by time
+        iter_counts = sort_stats(filtered_stats, sortby='time')
+    
+        for item in iter_counts:
+            out = 'Number of iterations at time %4.2f: %2i' % item
+            print(out)
             
     fout = open("data/lsg_allencahn.pickle", "wb")
     pickle.dump(lsg, fout)
@@ -190,7 +93,9 @@ def main(cwd=''):
         cwd (str): current working directory (need this for testing)
     """
     nsteps_arr = [2**i for i in range(10,20)]
-    run_reference(nsteps_arr)
+    nnodes = 5
+    nvars = 127
+    run_reference(nsteps_arr, nnodes, nvars)
 
 
 
