@@ -195,11 +195,15 @@ def solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, onl
     print("results saved in: {}".format(fname_errors))
 
 
-if __name__ == "__main__":
+def main():
+    global fig
+    
+#    fig = 1    
+    
     # set problem params
     nu = 0.1
     freq = 4 #24
-    n = [15, 7]
+    n = [255, 127]
     
     # set method params
     m = [5,5]
@@ -218,13 +222,44 @@ if __name__ == "__main__":
         fname_errors = "data/errors_heat1d.pickle"
         figname = "figures/errors_heat1d.png"
     
-#    figname = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_heat1d_space_spread_dxbig"
+    path = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_heat1d_"
+    figdict = ["space_spread", "space_spread_psmall", "space_spread_dxbig", "random", "spread_freqhigh"]
+    
+    if 1 <= fig and fig <= 5:
+        figname = path + figdict[fig-1]
+        if fig == 1:
+            order_sdc=lambda k: min(k+1, m[0]+1)
+            order_mlsdc=lambda k: min(2*k+1, m[0]+1)
+        elif fig == 2:
+            iorder = 4
+            nsteps_arr = [2**i for i in range(14,18)]
+            order_sdc=lambda k: min(k+1, m[0]+1)
+            order_mlsdc=lambda k: min(k, m[0]+1)
+        elif fig == 3:
+            n = [15, 7]
+            order_sdc=lambda k: min(k+1, m[0]+1)
+            order_mlsdc=lambda k: min(k, m[0]+1)
+        elif fig == 4:
+            random_init = True
+            nsteps_arr = [2**i for i in range(16,20)]
+            order_sdc=lambda k: min(k, m[0]+1)
+            order_mlsdc=lambda k: min(k, m[0]+1)
+        elif fig == 5:
+            freq = 24
+            nsteps_arr = [2**i for i in range(14,18)]
+            order_sdc = lambda k: min(k+1, m[0]+1)
+            order_mlsdc = lambda k: min(k, m[0]+1)
+    else:
+        #whatsoever
+        order_sdc=lambda k: min(k+1, m[0]+1)
+        order_mlsdc=lambda k: min(2*k+1, m[0]+1)
     
     solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)
-#    if random_init:
-    plot_errors(fname_errors, figname, order_sdc=lambda k: k+1, order_mlsdc=lambda k: k)
-#    else:
-        # with high frequency
-#        plot_errors(fname_errors, figname, order_sdc=lambda n: n+1, order_mlsdc=lambda n: n if n>1 else 2*n+1)
-        # with low frequency
-#        plot_errors(fname_errors, figname, order_sdc=lambda k: k+1, order_mlsdc=lambda k: min(m[0]+1, 2*k+1))
+    plot_errors(fname_errors, figname, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
+    
+
+if __name__ == "__main__":
+    for fig in range(1,6):
+        main()
+    
+    

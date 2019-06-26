@@ -11,7 +11,7 @@ import pickle
 import matplotlib.pyplot as plt
 import matplotlib
 
-matplotlib.rcParams.update({'font.size': 14})
+matplotlib.rcParams.update({'font.size': 18})
 
 def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n: n, order_mlsdc= lambda n: 2*n):
     # Daten einlesen
@@ -23,7 +23,7 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
 #    plt.rcParams["figure.figsize"] = [7.5,5.]
     
     # Farben und Symbole fuer Linien und Punkte einstellen
-    color = ['orange', 'red', 'magenta', 'blue', 'green']
+    color = ['red', 'magenta', 'blue', 'teal', 'green']
     marker = ['x','d','o','^','s']
     
     # Grenzen der y-Achse (letzter Punkt der untersten Linie bei MLSDC, erster Fehler bei SDC)
@@ -41,7 +41,7 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
         for j, niter in enumerate(err['niter_arr']):
 
             # erreichte Punkte
-            axes[i].plot(dt_arr, [err[(niter,n)] for n in err['nsteps_arr']], color=color[j], marker=marker[j], linestyle='None', label='k={}'.format(niter))
+            axes[i].plot(dt_arr, [err[(niter,n)] for n in err['nsteps_arr']], color=color[j], marker=marker[j], markersize=10, linestyle='None', label='k={}'.format(niter))
             
             # erwartete Linie: err
             if err['type'] == 'SDC':
@@ -52,14 +52,22 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
         axes[i].set_xscale('log', basex=2)
         axes[i].set_yscale('log')
         axes[i].set_xlabel(r'$\Delta$t')
-        axes[i].set_ylabel('error')
         axes[i].set_xlim(dt_arr[0]+dt_arr[0]/8, dt_arr[-1]-dt_arr[-1]/8)
-#        plt.ylim(ymin*1E-1, ymax*1E2)
-#        if err['type'] == 'MLSDC':
-#            plt.legend(title='lines = k')
-#        else:
+#        start, end = axes[i].get_ylim()
+#        axes[i].yaxis.set_ticks(np.linspace(start, end, 6))
+        axes[i].set_yticks(axes[i].get_yticks()[::2])
     
-    axes[0].legend(numpoints=1, loc="lower left")
+    axes[0].set_ylabel('error')
+    
+    ## LEGEND
+    # reference: https://stackoverflow.com/questions/4700614/how-to-put-the-legend-out-of-the-plot
+    # at the bottom
+#    handles, labels = axes[0].get_legend_handles_labels()
+#    f.legend(handles, labels, loc=8, numpoints=1, ncol=5)
+#    plt.subplots_adjust(bottom=0.25)
+    # at the right    
+    axes[1].legend(numpoints=1, bbox_to_anchor=(1.04,0.5), loc="center left", borderaxespad=0, fontsize='small')
+    
     plt.show()  
     
     if figname:
