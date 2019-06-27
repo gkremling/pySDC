@@ -16,7 +16,7 @@ from copy import deepcopy
 # code partly from pySDC/playgrounds/Allen_Cahn/AllenCahn_reference.py and AllenCahn_contracting_circle_SDC.py
 
 
-def setup_parameters(restol, maxiter, initial_guess, m, n, radius, eps):
+def setup_parameters(restol, maxiter, initial_guess, m, n, freq, eps):
     """
     Helper routine to fill in all relevant parameters
 
@@ -44,9 +44,9 @@ def setup_parameters(restol, maxiter, initial_guess, m, n, radius, eps):
     problem_params['newton_tol'] = 1E-10
     problem_params['lin_tol'] = 1E-10
     problem_params['lin_maxiter'] = 100
-    problem_params['interval'] = (-10.,10.) #-0.5,0.5
+    problem_params['interval'] = (0.,1.) #-0.5,0.5
     problem_params['nvars'] = n
-    problem_params['radius'] = radius
+    problem_params['freq'] = freq
     problem_params['eps'] = eps
 
     # initialize step parameters
@@ -60,7 +60,7 @@ def setup_parameters(restol, maxiter, initial_guess, m, n, radius, eps):
 
     # fill description dictionary for easy step instantiation
     description = dict()
-    description['problem_class'] = allencahn_tanhwave_fullyimplicit
+    description['problem_class'] = allencahn_sinwave_fullyimplicit
     description['problem_params'] = problem_params  # pass problem parameters
     description['sweeper_class'] = sweeper_random_initial_guess
     description['sweeper_params'] = sweeper_params  # pass sweeper parameters
@@ -70,7 +70,7 @@ def setup_parameters(restol, maxiter, initial_guess, m, n, radius, eps):
     return description, controller_params
 
 
-def run_reference(nsteps_arr, nnodes, nvars, radius=0.25, eps=0.04):
+def run_reference(nsteps_arr, nnodes, nvars, freq, eps):
     """
     Routine to run particular SDC variant
 
@@ -79,7 +79,7 @@ def run_reference(nsteps_arr, nnodes, nvars, radius=0.25, eps=0.04):
     """
 
     # load default parameters
-    description, controller_params = setup_parameters(restol=1E-10, maxiter=50, initial_guess='zero', m=nnodes, n=nvars, radius=radius, eps=eps)
+    description, controller_params = setup_parameters(restol=1E-10, maxiter=50, initial_guess='zero', m=nnodes, n=nvars, freq=freq, eps=eps)
 
     # setup parameters "in time"
     t0 = 0.
@@ -143,14 +143,14 @@ def run_reference(nsteps_arr, nnodes, nvars, radius=0.25, eps=0.04):
     fout.close()
 
 
-def solve_allencahn(m, n, iorder, radius, eps, initial_guess, niter_arr, nsteps_arr, fname_errors):
+def solve_allencahn(m, n, iorder, freq, eps, initial_guess, niter_arr, nsteps_arr, fname_errors):
     """
     Run SDC and MLSDC for 1D heat equation with given parameters
     and compare errors for different numbers of iterations and time steps
     """    
     # get description dict for SDC
     description_sdc, controller_params = setup_parameters(restol=0, maxiter=1, initial_guess=initial_guess, \
-                                            m=m[0], n=n[0], radius=radius, eps=eps)
+                                            m=m[0], n=n[0], freq=freq, eps=eps)
     
     # changes to get description dict for MLSDC
     description_mlsdc = deepcopy(description_sdc)
@@ -273,9 +273,9 @@ def solve_allencahn(m, n, iorder, radius, eps, initial_guess, niter_arr, nsteps_
     
 def main():
     # set problem params
-    radius = 4 #0.25
-    eps = 1.2 #0.07
-    n = [511, 255]
+    freq = 2 #0.25
+    eps = 0.1 #0.07
+    n = [255, 127]
     
     # set method params
     m = [3,3]
@@ -284,14 +284,14 @@ def main():
     iorder = 10
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(10,15)]
+    nsteps_arr = [2**i for i in range(15,20)]
     
     fname_errors = "data/errors_allencahn.pickle"
     figname = "figures/errors_allencahn.png"
     
-    run_reference(nsteps_arr, m[0], n[0], radius, eps)
-    solve_allencahn(m, n, iorder, radius, eps, initial_guess, niter_arr, nsteps_arr, fname_errors)
-    plot_errors(fname_errors, figname, order_sdc=lambda n: min(n, m[0]+1), order_mlsdc=lambda n: min(n, m[0]+1))
+    run_reference(nsteps_arr, m[0], n[0], freq, eps)
+    solve_allencahn(m, n, iorder, freq, eps, initial_guess, niter_arr, nsteps_arr, fname_errors)
+    plot_errors(fname_errors, figname, order_sdc=lambda n: min(n+1, m[0]+1), order_mlsdc=lambda n: min(n+1, m[0]+1))
 #    if random_init:
 #        plot_errors(fname_errors, figname, order_sdc=lambda n: n, order_mlsdc=lambda n: n)
 #    else:
