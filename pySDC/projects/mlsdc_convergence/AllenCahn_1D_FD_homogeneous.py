@@ -8,7 +8,8 @@ from pySDC.core.Problem import ptype
 from pySDC.implementations.datatype_classes.mesh import mesh, rhs_imex_mesh, rhs_comp2_mesh
 
 
-class allencahn_wave_fullyimplicit(ptype):
+
+class allencahn_tanhwave_fullyimplicit(ptype):
     """
     Example implementing the Allen-Cahn equation in 1D with finite differences and inhomogeneous Dirichlet-BC,
     with driving force, 0-1 formulation (Bayreuth example)
@@ -43,7 +44,7 @@ class allencahn_wave_fullyimplicit(ptype):
             problem_params['stop_at_nan'] = True
 
         # invoke super init, passing number of dofs, dtype_u and dtype_f
-        super(allencahn_wave_fullyimplicit, self).__init__(problem_params['nvars'], dtype_u, dtype_f, problem_params)
+        super(allencahn_tanhwave_fullyimplicit, self).__init__(problem_params['nvars'], dtype_u, dtype_f, problem_params)
 
         # compute dx and get discretization matrix A
         self.dx = (self.params.interval[1] - self.params.interval[0]) / (self.params.nvars + 1)
@@ -183,7 +184,7 @@ class allencahn_wave_fullyimplicit(ptype):
         me = self.dtype_u(self.init, val=0.0)
         me.values = 0.5 * (1 + np.tanh((self.params.radius - abs(self.xvalues)) / (np.sqrt(2) * self.params.eps)))
         return me
-        
+
 
 class allencahn_sinwave_fullyimplicit(ptype):
     """
@@ -223,7 +224,7 @@ class allencahn_sinwave_fullyimplicit(ptype):
             problem_params['stop_at_nan'] = True
 
         # invoke super init, passing number of dofs, dtype_u and dtype_f
-        super(allencahn_wave_fullyimplicit, self).__init__(problem_params['nvars'], dtype_u, dtype_f, problem_params)
+        super(allencahn_sinwave_fullyimplicit, self).__init__(problem_params['nvars'], dtype_u, dtype_f, problem_params)
 
         # compute dx and get discretization matrix A
         self.dx = (self.params.interval[1] - self.params.interval[0]) / (self.params.nvars + 1)
@@ -279,6 +280,8 @@ class allencahn_sinwave_fullyimplicit(ptype):
         v = 3.0 * np.sqrt(2) * self.params.eps * self.params.dw
         self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
         self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
+#        self.uext.values[0] = 0.
+#        self.uext.values[-1] = 0.
 
         A = self.A[1:-1, 1:-1]
         # start newton iteration
@@ -340,6 +343,8 @@ class allencahn_sinwave_fullyimplicit(ptype):
         v = 3.0 * np.sqrt(2) * self.params.eps * self.params.dw
         self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
         self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
+#        self.uext.values[0] = 0.
+#        self.uext.values[-1] = 0.
 
         self.uext.values[1:-1] = u.values[:]
 
@@ -359,7 +364,7 @@ class allencahn_sinwave_fullyimplicit(ptype):
         Returns:
             dtype_u: exact solution
         """
-        
+
         me = self.dtype_u(self.init, val=0.0)
         me.values = np.sin(np.pi * self.params.freq * self.xvalues)
         return me
