@@ -8,11 +8,19 @@ from pySDC.core.Problem import ptype
 from pySDC.implementations.datatype_classes.mesh import mesh, rhs_imex_mesh, rhs_comp2_mesh
 
 
+<<<<<<< HEAD
 
 class allencahn_tanhwave_fullyimplicit(ptype):
     """
     Example implementing the Allen-Cahn equation in 1D with finite differences and inhomogeneous Dirichlet-BC,
     with driving force, 0-1 formulation (Bayreuth example)
+=======
+class allencahn_wave_fullyimplicit(ptype):
+    """
+    Example implementing the Allen-Cahn equation in 1D with finite differences and inhomogeneous Dirichlet-BC,
+    with driving force, 0-1 formulation (Bayreuth example)
+
+>>>>>>> added the two missed files (because they were new)
     Attributes:
         A: second-order FD discretization of the 1D laplace operator
         dx: distance between two spatial nodes
@@ -21,6 +29,10 @@ class allencahn_tanhwave_fullyimplicit(ptype):
     def __init__(self, problem_params, dtype_u=mesh, dtype_f=mesh):
         """
         Initialization routine
+<<<<<<< HEAD
+=======
+
+>>>>>>> added the two missed files (because they were new)
         Args:
             problem_params (dict): custom parameters for the example
             dtype_u: mesh data type (will be passed parent class)
@@ -42,7 +54,11 @@ class allencahn_tanhwave_fullyimplicit(ptype):
             problem_params['stop_at_nan'] = True
 
         # invoke super init, passing number of dofs, dtype_u and dtype_f
+<<<<<<< HEAD
         super(allencahn_tanhwave_fullyimplicit, self).__init__(problem_params['nvars'], dtype_u, dtype_f, problem_params)
+=======
+        super(allencahn_wave_fullyimplicit, self).__init__(problem_params['nvars'], dtype_u, dtype_f, problem_params)
+>>>>>>> added the two missed files (because they were new)
 
         # compute dx and get discretization matrix A
         self.dx = (self.params.interval[1] - self.params.interval[0]) / (self.params.nvars + 1)
@@ -60,9 +76,17 @@ class allencahn_tanhwave_fullyimplicit(ptype):
     def __get_A(N, dx):
         """
         Helper function to assemble FD matrix A in sparse format
+<<<<<<< HEAD
         Args:
             N (int): number of dofs
             dx (float): distance between two spatial nodes
+=======
+
+        Args:
+            N (int): number of dofs
+            dx (float): distance between two spatial nodes
+
+>>>>>>> added the two missed files (because they were new)
         Returns:
             scipy.sparse.csc_matrix: matrix A in CSC format
         """
@@ -76,11 +100,19 @@ class allencahn_tanhwave_fullyimplicit(ptype):
     def solve_system(self, rhs, factor, u0, t):
         """
         Simple Newton solver
+<<<<<<< HEAD
+=======
+
+>>>>>>> added the two missed files (because they were new)
         Args:
             rhs (dtype_f): right-hand side for the nonlinear system
             factor (float): abbrev. for the node-to-node stepsize (or any other factor required)
             u0 (dtype_u): initial guess for the iterative solver
             t (float): current time (required here for the BC)
+<<<<<<< HEAD
+=======
+
+>>>>>>> added the two missed files (because they were new)
         Returns:
             dtype_u: solution u
         """
@@ -143,9 +175,17 @@ class allencahn_tanhwave_fullyimplicit(ptype):
     def eval_f(self, u, t):
         """
         Routine to evaluate the RHS
+<<<<<<< HEAD
         Args:
             u (dtype_u): current values
             t (float): current time
+=======
+
+        Args:
+            u (dtype_u): current values
+            t (float): current time
+
+>>>>>>> added the two missed files (because they were new)
         Returns:
             dtype_f: the RHS
         """
@@ -165,8 +205,15 @@ class allencahn_tanhwave_fullyimplicit(ptype):
     def u_exact(self, t):
         """
         Routine to compute the exact solution at time t
+<<<<<<< HEAD
         Args:
             t (float): current time
+=======
+
+        Args:
+            t (float): current time
+
+>>>>>>> added the two missed files (because they were new)
         Returns:
             dtype_u: exact solution
         """
@@ -174,12 +221,20 @@ class allencahn_tanhwave_fullyimplicit(ptype):
         me = self.dtype_u(self.init, val=0.0)
         me.values = 0.5 * (1 + np.tanh((self.params.radius - abs(self.xvalues)) / (np.sqrt(2) * self.params.eps)))
         return me
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> added the two missed files (because they were new)
 
 class allencahn_sinwave_fullyimplicit(ptype):
     """
     Example implementing the Allen-Cahn equation in 1D with finite differences and inhomogeneous Dirichlet-BC,
     with driving force, 0-1 formulation (Bayreuth example)
+<<<<<<< HEAD
+=======
+
+>>>>>>> added the two missed files (because they were new)
     Attributes:
         A: second-order FD discretization of the 1D laplace operator
         dx: distance between two spatial nodes
@@ -188,6 +243,10 @@ class allencahn_sinwave_fullyimplicit(ptype):
     def __init__(self, problem_params, dtype_u=mesh, dtype_f=mesh):
         """
         Initialization routine
+<<<<<<< HEAD
+=======
+
+>>>>>>> added the two missed files (because they were new)
         Args:
             problem_params (dict): custom parameters for the example
             dtype_u: mesh data type (will be passed parent class)
@@ -205,14 +264,23 @@ class allencahn_sinwave_fullyimplicit(ptype):
         if (problem_params['nvars'] + 1) % 2 != 0:
             raise ProblemError('setup requires nvars = 2^p - 1')
             
+<<<<<<< HEAD
         if problem_params['freq'] < 0:
             raise ProblemError('Frequency for sinus wave as initial value must be positive')
+=======
+        if (problem_params['freq'] < 0):
+            raise ProblemError('frequency of sinus wave for initial value must be positive')
+>>>>>>> added the two missed files (because they were new)
 
         if 'stop_at_nan' not in problem_params:
             problem_params['stop_at_nan'] = True
 
         # invoke super init, passing number of dofs, dtype_u and dtype_f
+<<<<<<< HEAD
         super(allencahn_sinwave_fullyimplicit, self).__init__(problem_params['nvars'], dtype_u, dtype_f, problem_params)
+=======
+        super(allencahn_wave_fullyimplicit, self).__init__(problem_params['nvars'], dtype_u, dtype_f, problem_params)
+>>>>>>> added the two missed files (because they were new)
 
         # compute dx and get discretization matrix A
         self.dx = (self.params.interval[1] - self.params.interval[0]) / (self.params.nvars + 1)
@@ -230,9 +298,17 @@ class allencahn_sinwave_fullyimplicit(ptype):
     def __get_A(N, dx):
         """
         Helper function to assemble FD matrix A in sparse format
+<<<<<<< HEAD
         Args:
             N (int): number of dofs
             dx (float): distance between two spatial nodes
+=======
+
+        Args:
+            N (int): number of dofs
+            dx (float): distance between two spatial nodes
+
+>>>>>>> added the two missed files (because they were new)
         Returns:
             scipy.sparse.csc_matrix: matrix A in CSC format
         """
@@ -246,11 +322,19 @@ class allencahn_sinwave_fullyimplicit(ptype):
     def solve_system(self, rhs, factor, u0, t):
         """
         Simple Newton solver
+<<<<<<< HEAD
+=======
+
+>>>>>>> added the two missed files (because they were new)
         Args:
             rhs (dtype_f): right-hand side for the nonlinear system
             factor (float): abbrev. for the node-to-node stepsize (or any other factor required)
             u0 (dtype_u): initial guess for the iterative solver
             t (float): current time (required here for the BC)
+<<<<<<< HEAD
+=======
+
+>>>>>>> added the two missed files (because they were new)
         Returns:
             dtype_u: solution u
         """
@@ -264,8 +348,11 @@ class allencahn_sinwave_fullyimplicit(ptype):
         v = 3.0 * np.sqrt(2) * self.params.eps * self.params.dw
         self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
         self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
+<<<<<<< HEAD
 #        self.uext.values[0] = 0.
 #        self.uext.values[-1] = 0.
+=======
+>>>>>>> added the two missed files (because they were new)
 
         A = self.A[1:-1, 1:-1]
         # start newton iteration
@@ -315,9 +402,17 @@ class allencahn_sinwave_fullyimplicit(ptype):
     def eval_f(self, u, t):
         """
         Routine to evaluate the RHS
+<<<<<<< HEAD
         Args:
             u (dtype_u): current values
             t (float): current time
+=======
+
+        Args:
+            u (dtype_u): current values
+            t (float): current time
+
+>>>>>>> added the two missed files (because they were new)
         Returns:
             dtype_f: the RHS
         """
@@ -325,8 +420,11 @@ class allencahn_sinwave_fullyimplicit(ptype):
         v = 3.0 * np.sqrt(2) * self.params.eps * self.params.dw
         self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
         self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
+<<<<<<< HEAD
 #        self.uext.values[0] = 0.
 #        self.uext.values[-1] = 0.
+=======
+>>>>>>> added the two missed files (because they were new)
 
         self.uext.values[1:-1] = u.values[:]
 
@@ -339,6 +437,7 @@ class allencahn_sinwave_fullyimplicit(ptype):
     def u_exact(self, t):
         """
         Routine to compute the exact solution at time t
+<<<<<<< HEAD
         Args:
             t (float): current time
         Returns:
@@ -347,6 +446,18 @@ class allencahn_sinwave_fullyimplicit(ptype):
 
         me = self.dtype_u(self.init, val=0.0)
         me.values = np.sin(self.params.freq*np.pi*self.xvalues)
+=======
+
+        Args:
+            t (float): current time
+
+        Returns:
+            dtype_u: exact solution
+        """
+        
+        me = self.dtype_u(self.init, val=0.0)
+        me.values = np.sin(np.pi * self.params.freq * self.xvalues)
+>>>>>>> added the two missed files (because they were new)
         return me
 
 
