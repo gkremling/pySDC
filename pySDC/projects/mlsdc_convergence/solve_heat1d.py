@@ -138,7 +138,7 @@ def solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, onl
             err_ode_mlsdc = np.linalg.norm(u_ode - u_num_mlsdc, ord=np.inf)
             error_ode_mlsdc[(niter, nsteps)] = err_ode_mlsdc
             order_ode_mlsdc = log(error_ode_mlsdc[(niter, nsteps_arr[i-1])]/err_ode_mlsdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print('MLSDC:\tu_ode:\terror: %8.6e\torder:%4.2f' % (err_ode_mlsdc, order_ode_mlsdc))
+#            print('MLSDC:\tu_ode:\terror: %8.6e\torder:%4.2f' % (err_ode_mlsdc, order_ode_mlsdc))
         
             # compute solution of the collocation problem
             if not nsteps in u_coll:
@@ -150,9 +150,9 @@ def solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, onl
             err_coll_sdc = np.linalg.norm(u_coll[nsteps] - u_num_sdc.flatten(), ord=np.inf)
             error_coll_sdc[(niter, nsteps)] = err_coll_sdc
             order_coll_sdc = log(error_coll_sdc[(niter, nsteps_arr[i-1])]/err_coll_sdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print('SDC:\tu_coll:\terror: %8.6e\torder:%4.2f' % (err_coll_sdc, order_coll_sdc))
+#            print('SDC:\tu_coll:\terror: %8.6e\torder:%4.2f' % (err_coll_sdc, order_coll_sdc))
             
-            err_coll_mlsdc = np.linalg.norm(u_coll[nsteps] - u_num_mlsdc.flatten(), ord=np.inf)
+            err_coll_mlsdc = np.linalg.norm(u_coll[nsteps] - u_ode.flatten(), ord=np.inf)
             error_coll_mlsdc[(niter, nsteps)] = err_coll_mlsdc
             order_coll_mlsdc = log(error_coll_mlsdc[(niter, nsteps_arr[i-1])]/err_coll_mlsdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
             print('MLSDC:\tu_coll:\terror: %8.6e\torder:%4.2f' % (err_coll_mlsdc, order_coll_mlsdc))
@@ -161,28 +161,28 @@ def solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, onl
             err_uend_sdc = np.linalg.norm(u_ode[-1] - uend_sdc.values)
             error_uend_sdc[(niter, nsteps)] = err_uend_sdc
             order_uend_sdc = log(error_uend_sdc[(niter, nsteps_arr[i-1])]/err_uend_sdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print('SDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_sdc, order_uend_sdc))
+#            print('SDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_sdc, order_uend_sdc))
             
             err_uend_mlsdc = np.linalg.norm(u_ode[-1] - uend_mlsdc.values)
             error_uend_mlsdc[(niter, nsteps)] = err_uend_mlsdc
             order_uend_mlsdc = log(error_uend_mlsdc[(niter, nsteps_arr[i-1])]/err_uend_mlsdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print('MLSDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_mlsdc, order_uend_mlsdc))
+#            print('MLSDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_mlsdc, order_uend_mlsdc))
     
     # compute, save and print order of the ratio between U-U^(k) and U-U^(k-1)
-    error_k_sdc = {}
-    error_k_mlsdc = {}
-    # iterate over k
-    for j, niter in enumerate(niter_arr[:-1]):
-        print("relation between U-U^%d and U-U^%d" % (niter, niter_arr[j+1]))
-        # iterate over dt
-        for i, nsteps in enumerate(nsteps_arr):
-            error_k_sdc[nsteps] = error_ode_sdc[(niter_arr[j+1], nsteps)] / error_ode_sdc[(niter, nsteps)]
-            order = log(error_k_sdc[nsteps_arr[i-1]]/error_k_sdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print("SDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_sdc[nsteps], order))
-            
-            error_k_mlsdc[nsteps] = error_ode_mlsdc[(niter_arr[j+1], nsteps)] / error_ode_mlsdc[(niter, nsteps)]
-            order = log(error_k_mlsdc[nsteps_arr[i-1]]/error_k_mlsdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print("MLSDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_mlsdc[nsteps], order))
+#    error_k_sdc = {}
+#    error_k_mlsdc = {}
+#    # iterate over k
+#    for j, niter in enumerate(niter_arr[:-1]):
+#        print("relation between U-U^%d and U-U^%d" % (niter, niter_arr[j+1]))
+#        # iterate over dt
+#        for i, nsteps in enumerate(nsteps_arr):
+#            error_k_sdc[nsteps] = error_ode_sdc[(niter_arr[j+1], nsteps)] / error_ode_sdc[(niter, nsteps)]
+#            order = log(error_k_sdc[nsteps_arr[i-1]]/error_k_sdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+#            print("SDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_sdc[nsteps], order))
+#            
+#            error_k_mlsdc[nsteps] = error_ode_mlsdc[(niter_arr[j+1], nsteps)] / error_ode_mlsdc[(niter, nsteps)]
+#            order = log(error_k_mlsdc[nsteps_arr[i-1]]/error_k_mlsdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+#            print("MLSDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_mlsdc[nsteps], order))
     
     # save results in pickle files (needed to plot results)
     fout = open(fname_errors, "wb")
@@ -203,10 +203,10 @@ def main():
     # set problem params
     nu = 0.1
     freq = 4 #24
-    n = [255, 127]
+    n = [15, 7]
     
     # set method params
-    m = [5,5]
+    m = [3,3]
     random_init = False
     iorder = 8
     # set number of iterations and time steps which shall be analysed
@@ -217,37 +217,38 @@ def main():
     
     if only_uend:
         fname_errors = "data/errors_heat1d_uend.pickle"
-        figname = "figures/errors_heat1d_uend.png"
+        figname = "figures/errors_heat1d_uend.pdf"
     else:
         fname_errors = "data/errors_heat1d.pickle"
-        figname = "figures/errors_heat1d.png"
+        figname = "figures/errors_heat1d.pdf"
     
     path = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_heat1d_"
     figdict = ["space_spread", "space_spread_psmall", "space_spread_dxbig", "random", "spread_freqhigh"]
     
     if 1 <= fig and fig <= 5:
-        figname = path + figdict[fig-1]
+#        figname = path + figdict[fig-1]
         if fig == 1:
-            order_sdc=lambda k: min(k+1, m[0]+1)
-            order_mlsdc=lambda k: min(2*k+1, m[0]+1)
+            order_sdc=lambda k: min(k, m[0]+1)
+            order_mlsdc=lambda k: min(2*k, m[0])
         elif fig == 2:
-            iorder = 4
-            nsteps_arr = [2**i for i in range(14,18)]
-            order_sdc=lambda k: min(k+1, m[0]+1)
-            order_mlsdc=lambda k: min(k, m[0]+1)
+            iorder = 2
+#            nsteps_arr = [2**i for i in range(14,18)]
+            order_sdc=lambda k: min(k, m[0])+1
+            order_mlsdc=lambda k: min(2*k, m[0]+1)
         elif fig == 3:
             n = [15, 7]
-            order_sdc=lambda k: min(k+1, m[0]+1)
-            order_mlsdc=lambda k: min(k, m[0]+1)
+            order_sdc=lambda k: min(k, m[0])
+            order_mlsdc=lambda k: min(k, m[0])
         elif fig == 4:
             random_init = True
-            nsteps_arr = [2**i for i in range(16,20)]
-            order_sdc=lambda k: min(k, m[0]+1)
-            order_mlsdc=lambda k: min(k, m[0]+1)
+            niter_arr = range(3,8)
+            nsteps_arr = [2**i for i in range(8,12)]
+            order_sdc=lambda k: min(k, m[0])
+            order_mlsdc=lambda k: min(k, m[0])
         elif fig == 5:
             freq = 24
             nsteps_arr = [2**i for i in range(14,18)]
-            order_sdc = lambda k: min(k+1, m[0]+1)
+            order_sdc = lambda k: min(k, m[0])
             order_mlsdc = lambda k: min(k, m[0]+1)
     else:
         #whatsoever
@@ -259,7 +260,8 @@ def main():
     
 
 if __name__ == "__main__":
-    for fig in range(1,6):
-        main()
+#    for fig in range(1,6):
+    fig=4
+    main()
     
     
