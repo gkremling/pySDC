@@ -32,6 +32,8 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
         
     f, axes = plt.subplots(1, 2, sharex=False, sharey=True, figsize=(15,5))
     
+#    ymin = np.min(np.min(error[0]))
+    
     # Plot erstellen
     for i, err in enumerate(error):            
         dt_arr = 1./np.array(err['nsteps_arr'])
@@ -56,6 +58,7 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
 #        start, end = axes[i].get_ylim()
 #        axes[i].yaxis.set_ticks(np.linspace(start, end, 6))
         axes[i].set_yticks(axes[i].get_yticks()[::2])
+#        axes[i].set_ylim([0.01,1])
     
     axes[0].set_ylabel('error')
     
@@ -71,7 +74,7 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
     plt.show()  
     
     if figname:
-        f.savefig(figname, bbox_inches='tight')
+        f.savefig(figname, bbox_inches='tight', format="pdf")
 #        plt.savefig('/home10/kremling/Documents/Studium/Gitte/Master/Seminararbeit/seminararbeit/daten/graphics/{}_{}_errors.png'.format(err['type'], dgl))
         print('figure saved in: {}'.format(figname)) 
     
