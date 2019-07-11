@@ -13,6 +13,7 @@ class allencahn_tanhwave_fullyimplicit(ptype):
     """
     Example implementing the Allen-Cahn equation in 1D with finite differences and inhomogeneous Dirichlet-BC,
     with driving force, 0-1 formulation (Bayreuth example)
+
     Attributes:
         A: second-order FD discretization of the 1D laplace operator
         dx: distance between two spatial nodes
@@ -21,6 +22,7 @@ class allencahn_tanhwave_fullyimplicit(ptype):
     def __init__(self, problem_params, dtype_u=mesh, dtype_f=mesh):
         """
         Initialization routine
+
         Args:
             problem_params (dict): custom parameters for the example
             dtype_u: mesh data type (will be passed parent class)
@@ -60,9 +62,11 @@ class allencahn_tanhwave_fullyimplicit(ptype):
     def __get_A(N, dx):
         """
         Helper function to assemble FD matrix A in sparse format
+
         Args:
             N (int): number of dofs
             dx (float): distance between two spatial nodes
+
         Returns:
             scipy.sparse.csc_matrix: matrix A in CSC format
         """
@@ -76,11 +80,13 @@ class allencahn_tanhwave_fullyimplicit(ptype):
     def solve_system(self, rhs, factor, u0, t):
         """
         Simple Newton solver
+
         Args:
             rhs (dtype_f): right-hand side for the nonlinear system
             factor (float): abbrev. for the node-to-node stepsize (or any other factor required)
             u0 (dtype_u): initial guess for the iterative solver
             t (float): current time (required here for the BC)
+
         Returns:
             dtype_u: solution u
         """
@@ -143,9 +149,11 @@ class allencahn_tanhwave_fullyimplicit(ptype):
     def eval_f(self, u, t):
         """
         Routine to evaluate the RHS
+
         Args:
             u (dtype_u): current values
             t (float): current time
+
         Returns:
             dtype_f: the RHS
         """
@@ -165,8 +173,10 @@ class allencahn_tanhwave_fullyimplicit(ptype):
     def u_exact(self, t):
         """
         Routine to compute the exact solution at time t
+
         Args:
             t (float): current time
+
         Returns:
             dtype_u: exact solution
         """
@@ -180,6 +190,7 @@ class allencahn_sinwave_fullyimplicit(ptype):
     """
     Example implementing the Allen-Cahn equation in 1D with finite differences and inhomogeneous Dirichlet-BC,
     with driving force, 0-1 formulation (Bayreuth example)
+
     Attributes:
         A: second-order FD discretization of the 1D laplace operator
         dx: distance between two spatial nodes
@@ -188,6 +199,7 @@ class allencahn_sinwave_fullyimplicit(ptype):
     def __init__(self, problem_params, dtype_u=mesh, dtype_f=mesh):
         """
         Initialization routine
+
         Args:
             problem_params (dict): custom parameters for the example
             dtype_u: mesh data type (will be passed parent class)
@@ -205,8 +217,8 @@ class allencahn_sinwave_fullyimplicit(ptype):
         if (problem_params['nvars'] + 1) % 2 != 0:
             raise ProblemError('setup requires nvars = 2^p - 1')
             
-        if problem_params['freq'] < 0:
-            raise ProblemError('Frequency for sinus wave as initial value must be positive')
+        if (problem_params['freq'] < 0):
+            raise ProblemError('frequency of sinus wave for initial value must be positive')
 
         if 'stop_at_nan' not in problem_params:
             problem_params['stop_at_nan'] = True
@@ -230,9 +242,11 @@ class allencahn_sinwave_fullyimplicit(ptype):
     def __get_A(N, dx):
         """
         Helper function to assemble FD matrix A in sparse format
+
         Args:
             N (int): number of dofs
             dx (float): distance between two spatial nodes
+
         Returns:
             scipy.sparse.csc_matrix: matrix A in CSC format
         """
@@ -246,11 +260,13 @@ class allencahn_sinwave_fullyimplicit(ptype):
     def solve_system(self, rhs, factor, u0, t):
         """
         Simple Newton solver
+
         Args:
             rhs (dtype_f): right-hand side for the nonlinear system
             factor (float): abbrev. for the node-to-node stepsize (or any other factor required)
             u0 (dtype_u): initial guess for the iterative solver
             t (float): current time (required here for the BC)
+
         Returns:
             dtype_u: solution u
         """
@@ -315,9 +331,11 @@ class allencahn_sinwave_fullyimplicit(ptype):
     def eval_f(self, u, t):
         """
         Routine to evaluate the RHS
+
         Args:
             u (dtype_u): current values
             t (float): current time
+
         Returns:
             dtype_f: the RHS
         """
@@ -339,14 +357,16 @@ class allencahn_sinwave_fullyimplicit(ptype):
     def u_exact(self, t):
         """
         Routine to compute the exact solution at time t
+
         Args:
             t (float): current time
+
         Returns:
             dtype_u: exact solution
         """
 
         me = self.dtype_u(self.init, val=0.0)
-        me.values = np.sin(self.params.freq*np.pi*self.xvalues)
+        me.values = np.sin(np.pi * self.params.freq * self.xvalues)
         return me
 
 
