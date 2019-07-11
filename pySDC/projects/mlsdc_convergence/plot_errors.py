@@ -32,7 +32,12 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
         
     f, axes = plt.subplots(1, 2, sharex=False, sharey=True, figsize=(15,5))
     
-#    ymin = np.min(np.min(error[0]))
+    ymin1 = min([err for err in error[0].values() if isinstance(err, np.float64)])
+    ymin2 = min([err for err in error[1].values() if isinstance(err, np.float64)])
+    ymin = min(ymin1, ymin2)
+    ymax1 = max([err for err in error[0].values() if isinstance(err, np.float64)])
+    ymax2 = max([err for err in error[1].values() if isinstance(err, np.float64)])
+    ymax = max(ymax1, ymax2)
     
     # Plot erstellen
     for i, err in enumerate(error):            
@@ -57,8 +62,10 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
         axes[i].set_xlim(dt_arr[0]+dt_arr[0]/8, dt_arr[-1]-dt_arr[-1]/8)
 #        start, end = axes[i].get_ylim()
 #        axes[i].yaxis.set_ticks(np.linspace(start, end, 6))
-        axes[i].set_yticks(axes[i].get_yticks()[::2])
-#        axes[i].set_ylim([0.01,1])
+#        axes[i].set_yticks(axes[i].get_yticks()[::2])
+        axes[i].set_yticks(np.power(10.,np.arange(-14,3,2)))
+        axes[i].set_ylim([ymin/10, ymax*10])
+#        axes[i].set_ylim([1e-14, 1])
     
     axes[0].set_ylabel('error')
     
