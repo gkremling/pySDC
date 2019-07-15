@@ -27,7 +27,7 @@ class sweeper_random_initial_guess(generic_implicit):
             # start with zero everywhere
             elif self.params.initial_guess == 'zero':
                 L.u[m] = P.dtype_u(init=P.init, val=0.0)
-                L.f[m] = P.dtype_f(init=P.init, val=0.0)
+                L.f[m] = P.eval_f(L.u[m], L.time + L.dt * self.coll.nodes[m - 1])
             elif self.params.initial_guess == 'random':
                 np.random.seed(m*30)
                 tmp = P.dtype_u(P.init)

@@ -44,7 +44,7 @@ def setup_parameters(restol, maxiter, initial_guess, m, n, freq, eps):
     problem_params['newton_tol'] = 1E-10
     problem_params['lin_tol'] = 1E-10
     problem_params['lin_maxiter'] = 100
-    problem_params['interval'] = (0.,1.) #-0.5,0.5
+    problem_params['interval'] = (0., 1.) #-0.5,0.5
     problem_params['nvars'] = n
     problem_params['freq'] = freq
     problem_params['eps'] = eps
@@ -70,7 +70,7 @@ def setup_parameters(restol, maxiter, initial_guess, m, n, freq, eps):
     return description, controller_params
 
 
-def run_reference(nsteps_arr, nnodes, nvars, freq, eps):
+def run_reference(nsteps_arr, nnodes, nvars, initial_guess, freq, eps):
     """
     Routine to run particular SDC variant
 
@@ -79,7 +79,7 @@ def run_reference(nsteps_arr, nnodes, nvars, freq, eps):
     """
 
     # load default parameters
-    description, controller_params = setup_parameters(restol=1E-10, maxiter=50, initial_guess='zero', m=nnodes, n=nvars, freq=freq, eps=eps)
+    description, controller_params = setup_parameters(restol=1E-10, maxiter=50, initial_guess=initial_guess, m=nnodes, n=nvars, freq=freq, eps=eps)
 
     # setup parameters "in time"
     t0 = 0.
@@ -275,7 +275,7 @@ def main():
     # set problem params
     freq = 2 #0.25
     eps = 0.1 #0.07
-    n = [255, 127]
+    n = [511, 255]
     
     # set method params
     m = [3,3]
@@ -284,12 +284,12 @@ def main():
     iorder = 10
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(15,20)]
+    nsteps_arr = [2**i for i in range(10,15)]
     
     fname_errors = "data/errors_allencahn.pickle"
     figname = "figures/errors_allencahn.png"
     
-    run_reference(nsteps_arr, m[0], n[0], freq, eps)
+    run_reference(nsteps_arr, m[0], n[0], initial_guess, freq, eps)
     solve_allencahn(m, n, iorder, freq, eps, initial_guess, niter_arr, nsteps_arr, fname_errors)
     plot_errors(fname_errors, figname, order_sdc=lambda n: min(n+1, m[0]+1), order_mlsdc=lambda n: min(n+1, m[0]+1))
 #    if random_init:
