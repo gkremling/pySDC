@@ -153,10 +153,13 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
             order_coll_sdc = log(error_coll_sdc[(niter, nsteps_arr[i-1])]/err_coll_sdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
             print('SDC:\tu_coll:\terror: %8.6e\torder:%4.2f' % (err_coll_sdc, order_coll_sdc))
             
-            err_coll_mlsdc = np.linalg.norm(u_coll[nsteps] - u_num_mlsdc.flatten(), ord=np.inf)
+#            err_coll_mlsdc = np.linalg.norm(u_coll[nsteps] - u_num_mlsdc.flatten(), ord=np.inf)
+#            err_coll_mlsdc = np.linalg.norm(u_coll[nsteps][-n[0]:] - u_ode[-1], ord=np.inf)
+            err_coll_mlsdc = np.linalg.norm(u_coll[nsteps] - u_ode.flatten(), ord=np.inf)
             error_coll_mlsdc[(niter, nsteps)] = err_coll_mlsdc
             order_coll_mlsdc = log(error_coll_mlsdc[(niter, nsteps_arr[i-1])]/err_coll_mlsdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print('MLSDC:\tu_coll:\terror: %8.6e\torder:%4.2f' % (err_coll_mlsdc, order_coll_mlsdc))
+#            print('MLSDC:\tu_coll:\terror: %8.6e\torder:%4.2f' % (err_coll_mlsdc, order_coll_mlsdc))
+            print('COLL:\tu_end\terror: %8.6e\torder:%4.2f' % (err_coll_mlsdc, order_coll_mlsdc))
             
             # compute, save and print ode error at the last quadrature node
             err_uend_sdc = np.linalg.norm(u_ode[-1] - uend_sdc.values)
@@ -170,20 +173,20 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
             print('MLSDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_mlsdc, order_uend_mlsdc))
     
     # compute, save and print order of the ratio between U-U^(k) and U-U^(k-1)
-    error_k_sdc = {}
-    error_k_mlsdc = {}
-    # iterate over k
-    for j, niter in enumerate(niter_arr[:-1]):
-        print("relation between U-U^%d and U-U^%d" % (niter, niter_arr[j+1]))
-        # iterate over dt
-        for i, nsteps in enumerate(nsteps_arr):
-            error_k_sdc[nsteps] = error_ode_sdc[(niter_arr[j+1], nsteps)] / error_ode_sdc[(niter, nsteps)]
-            order = log(error_k_sdc[nsteps_arr[i-1]]/error_k_sdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print("SDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_sdc[nsteps], order))
-            
-            error_k_mlsdc[nsteps] = error_ode_mlsdc[(niter_arr[j+1], nsteps)] / error_ode_mlsdc[(niter, nsteps)]
-            order = log(error_k_mlsdc[nsteps_arr[i-1]]/error_k_mlsdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print("MLSDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_mlsdc[nsteps], order))
+#    error_k_sdc = {}
+#    error_k_mlsdc = {}
+#    # iterate over k
+#    for j, niter in enumerate(niter_arr[:-1]):
+#        print("relation between U-U^%d and U-U^%d" % (niter, niter_arr[j+1]))
+#        # iterate over dt
+#        for i, nsteps in enumerate(nsteps_arr):
+#            error_k_sdc[nsteps] = error_ode_sdc[(niter_arr[j+1], nsteps)] / error_ode_sdc[(niter, nsteps)]
+#            order = log(error_k_sdc[nsteps_arr[i-1]]/error_k_sdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+#            print("SDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_sdc[nsteps], order))
+#            
+#            error_k_mlsdc[nsteps] = error_ode_mlsdc[(niter_arr[j+1], nsteps)] / error_ode_mlsdc[(niter, nsteps)]
+#            order = log(error_k_mlsdc[nsteps_arr[i-1]]/error_k_mlsdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+#            print("MLSDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_mlsdc[nsteps], order))
     
     # save results in pickle files (needed to plot results)
     fout = open(fname_errors, "wb")
@@ -192,6 +195,11 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
     else:
         pickle.dump([error_ode_sdc, error_ode_mlsdc], fout)
     fout.close()
+    
+#    print([t0+i*dt for i in range(0,4)])
+#    print(len(controller_sdc.MS))
+#    print([l.time for l in controller_sdc.MS])
+#    print(uend_sdc.values)
     
     print("results saved in: {}".format(fname_errors))
 
@@ -206,7 +214,7 @@ def main():
     
     # set method params
     m = [5,5]
-    init_val = "zero" #"spread"
+    init_val = "spread" #"spread"
     iorder = 8
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
@@ -216,27 +224,28 @@ def main():
     
     if only_uend:
         fname_errors = "data/errors_heat1d_uend.pickle"
-        figname = "figures/errors_heat1d_uend.png"
+        figname = "figures/errors_heat1d_uend.pdf"
     else:
         fname_errors = "data/errors_heat1d.pickle"
-        figname = "figures/errors_heat1d.png"
+        figname = "figures/errors_heat1d.pdf"
     
-    path = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_heat1d_"
-    figdict = ["space_spread", "space_spread_psmall", "space_spread_dxbig", "random", "spread_freqhigh"]
+#    path = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_heat1d_"
+    path = "/home/zam/kremling/Documents/Arbeit/Vortrag_SciCADE/presentation/daten/graphics/errors_heat1d_" 
+    figdict = ["spread", "spread_psmall", "spread_dxbig", "random", "spread_freqhigh"]
     
     if 1 <= fig and fig <= 5:
-        figname = path + figdict[fig-1]
+        figname = path + figdict[fig-1] + ".pdf"
         if fig == 1:
-            order_sdc=lambda k: min(k+1, m[0]+1)
-            order_mlsdc=lambda k: min(2*k+1, m[0]+1)
+            order_sdc=lambda k: min(k, m[0]+1)
+            order_mlsdc=lambda k: min(2*k, m[0]+1)
         elif fig == 2:
             iorder = 4
             nsteps_arr = [2**i for i in range(14,18)]
-            order_sdc=lambda k: min(k+1, m[0]+1)
+            order_sdc=lambda k: min(k, m[0]+1)
             order_mlsdc=lambda k: min(k, m[0]+1)
         elif fig == 3:
             n = [15, 7]
-            order_sdc=lambda k: min(k+1, m[0]+1)
+            order_sdc=lambda k: min(k, m[0]+1)
             order_mlsdc=lambda k: min(k, m[0]+1)
         elif fig == 4:
             init_val = "random"
@@ -246,14 +255,20 @@ def main():
         elif fig == 5:
             freq = 24
             nsteps_arr = [2**i for i in range(14,18)]
-            order_sdc = lambda k: min(k+1, m[0]+1)
+            order_sdc = lambda k: min(k, m[0]+1)
             order_mlsdc = lambda k: min(k, m[0]+1)
     else:
         #whatsoever
-        init_val = "zero"
-        nsteps_arr = [2**i for i in range(14,18)]
-        order_sdc=lambda k: min(k+1, m[0]+1)
-        order_mlsdc=lambda k: min(k+1, m[0]+1)
+        only_uend = False
+        init_val = "random"
+        nu = 0.01
+        freq = 2
+        m = [2,1]
+        n = [127,127]
+        niter_arr = range(1,6)
+        nsteps_arr = [2**i for i in range(16,22)]
+        order_sdc=lambda k: min(k, m[0]+1)
+        order_mlsdc=lambda k: min(k, m[0]+1)
     
     solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_uend, fname_errors)
     plot_errors(fname_errors, figname=None, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
