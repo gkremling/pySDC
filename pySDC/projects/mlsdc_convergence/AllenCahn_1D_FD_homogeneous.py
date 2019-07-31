@@ -98,9 +98,11 @@ class allencahn_tanhwave_fullyimplicit(ptype):
         Id = sp.eye(self.params.nvars)
 
         v = 3.0 * np.sqrt(2) * self.params.eps * self.params.dw
-        self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
-        self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
-
+#        self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
+#        self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
+        self.uext.values[0] = 0.
+        self.uext.values[-1] = 0.
+        
         A = self.A[1:-1, 1:-1]
         # start newton iteration
         n = 0
@@ -159,9 +161,11 @@ class allencahn_tanhwave_fullyimplicit(ptype):
         """
         # set up boundary values to embed inner points
         v = 3.0 * np.sqrt(2) * self.params.eps * self.params.dw
-        self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
-        self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
-
+#        self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
+#        self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
+        self.uext.values[0] = 0.
+        self.uext.values[-1] = 0.
+        
         self.uext.values[1:-1] = u.values[:]
 
         f = self.dtype_f(self.init)
@@ -278,10 +282,10 @@ class allencahn_sinwave_fullyimplicit(ptype):
         Id = sp.eye(self.params.nvars)
 
         v = 3.0 * np.sqrt(2) * self.params.eps * self.params.dw
-        self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
-        self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
-#        self.uext.values[0] = 0.
-#        self.uext.values[-1] = 0.
+#        self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
+#        self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
+        self.uext.values[0] = 0.
+        self.uext.values[-1] = 0.
 
         A = self.A[1:-1, 1:-1]
         # start newton iteration
@@ -341,10 +345,10 @@ class allencahn_sinwave_fullyimplicit(ptype):
         """
         # set up boundary values to embed inner points
         v = 3.0 * np.sqrt(2) * self.params.eps * self.params.dw
-        self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
-        self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
-#        self.uext.values[0] = 0.
-#        self.uext.values[-1] = 0.
+#        self.uext.values[0] = 0.5 * (1 + np.tanh((self.params.interval[0] - v * t) / (np.sqrt(2) * self.params.eps)))
+#        self.uext.values[-1] = 0.5 * (1 + np.tanh((self.params.interval[1] - v * t) / (np.sqrt(2) * self.params.eps)))
+        self.uext.values[0] = 0.
+        self.uext.values[-1] = 0.
 
         self.uext.values[1:-1] = u.values[:]
 

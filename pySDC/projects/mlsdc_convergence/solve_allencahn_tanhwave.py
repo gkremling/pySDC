@@ -284,7 +284,7 @@ def main():
     iorder = 10
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(10,15)]
+    nsteps_arr = [2**i for i in range(12,17)]
     
     fname_errors = "data/errors_allencahn.pickle"
     figname = "figures/errors_allencahn.png"
