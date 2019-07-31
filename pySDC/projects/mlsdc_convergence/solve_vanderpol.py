@@ -32,9 +32,9 @@ def solve_vanderpol(m, random_init, niter_arr, nsteps_arr, only_uend, fname_erro
     
     # initialize problem parameters
     problem_params = dict()
-    problem_params['newton_tol'] = 1E-12
-    problem_params['newton_maxiter'] = 50
-    problem_params['mu'] = 5
+    problem_params['newton_tol'] = 1E-13
+    problem_params['newton_maxiter'] = 100
+    problem_params['mu'] = 2
     problem_params['u0'] = (1.0, 0)
     problem_params['nvars'] = 2# number of degrees of freedom
     
@@ -122,40 +122,41 @@ def solve_vanderpol(m, random_init, niter_arr, nsteps_arr, only_uend, fname_erro
             uex = np.array(lsg[nsteps][1])
             err_sdc = np.linalg.norm(uex - u_num_sdc, ord=np.inf)
             error_sdc[(niter, nsteps)] = err_sdc
-            order_sdc = log(error_sdc[(niter, nsteps_arr[i-1])]/err_sdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+            order_sdc = log(error_sdc[(niter, nsteps_arr[i-1])]/err_sdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 and error_sdc[(niter, nsteps_arr[i-1])] > 0 else 0
             print('SDC:\tu_ode:\terror: %8.6e\torder:%4.2f' % (err_sdc, order_sdc))
             
             err_mlsdc = np.linalg.norm(uex - u_num_mlsdc, ord=np.inf)
             error_mlsdc[(niter, nsteps)] = err_mlsdc
-            order_mlsdc = log(error_mlsdc[(niter, nsteps_arr[i-1])]/err_mlsdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+            order_mlsdc = log(error_mlsdc[(niter, nsteps_arr[i-1])]/err_mlsdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 and error_mlsdc[(niter, nsteps_arr[i-1])] > 0 else 0
             print('MLSDC:\tu_ode:\terror: %8.6e\torder:%4.2f' % (err_mlsdc, order_mlsdc))
         
             # compute, save and print ode error at the last quadrature node
             err_uend_sdc = np.linalg.norm(uex[-1] - uend_sdc.values)
             error_uend_sdc[(niter, nsteps)] = err_uend_sdc
-            order_uend_sdc = log(error_uend_sdc[(niter, nsteps_arr[i-1])]/err_uend_sdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+            order_uend_sdc = log(error_uend_sdc[(niter, nsteps_arr[i-1])]/err_uend_sdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 and error_uend_sdc[(niter, nsteps_arr[i-1])] > 0 else 0
             print('SDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_sdc, order_uend_sdc))
             
             err_uend_mlsdc = np.linalg.norm(uex[-1] - uend_mlsdc.values)
             error_uend_mlsdc[(niter, nsteps)] = err_uend_mlsdc
-            order_uend_mlsdc = log(error_uend_mlsdc[(niter, nsteps_arr[i-1])]/err_uend_mlsdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+            order_uend_mlsdc = log(error_uend_mlsdc[(niter, nsteps_arr[i-1])]/err_uend_mlsdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 and error_uend_mlsdc[(niter, nsteps_arr[i-1])] > 0 else 0
             print('MLSDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_mlsdc, order_uend_mlsdc))
     
+
     # compute, save and print order of the ratio between U-U^(k) and U-U^(k-1)
-    error_k_sdc = {}
-    error_k_mlsdc = {}
+    error_k_sdc = {'type' : 'SDC', 'niter_arr' : niter_arr[:-1], 'nsteps_arr' : nsteps_arr}
+    error_k_mlsdc = {'type' : 'MLSDC', 'niter_arr' : niter_arr[:-1], 'nsteps_arr' : nsteps_arr}
     # iterate over k
     for j, niter in enumerate(niter_arr[:-1]):
         print("relation between U-U^%d and U-U^%d" % (niter, niter_arr[j+1]))
         # iterate over dt
         for i, nsteps in enumerate(nsteps_arr):
-            error_k_sdc[nsteps] = error_sdc[(niter_arr[j+1], nsteps)] / error_sdc[(niter, nsteps)]
-            order = log(error_k_sdc[nsteps_arr[i-1]]/error_k_sdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print("SDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_sdc[nsteps], order))
+            error_k_sdc[(niter, nsteps)] = error_sdc[(niter_arr[j+1], nsteps)] / error_sdc[(niter, nsteps)]
+            order = log(error_k_sdc[(niter, nsteps_arr[i-1])]/error_k_sdc[(niter, nsteps)])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+            print("SDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_sdc[(niter, nsteps)], order))
             
-            error_k_mlsdc[nsteps] = error_mlsdc[(niter_arr[j+1], nsteps)] / error_mlsdc[(niter, nsteps)]
-            order = log(error_k_mlsdc[nsteps_arr[i-1]]/error_k_mlsdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print("MLSDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_mlsdc[nsteps], order))
+            error_k_mlsdc[(niter, nsteps)] = error_mlsdc[(niter_arr[j+1], nsteps)] / error_mlsdc[(niter, nsteps)]
+            order = log(error_k_mlsdc[(niter, nsteps_arr[i-1])]/error_k_mlsdc[(niter, nsteps)])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+            print("MLSDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_mlsdc[(niter, nsteps)], order))
     
     # save results in pickle files (needed to plot results)
     fout = open(fname_errors, "wb")
@@ -170,13 +171,13 @@ def solve_vanderpol(m, random_init, niter_arr, nsteps_arr, only_uend, fname_erro
 
 if __name__ == "__main__":    
     # set method params
-    m = [7, 4]
-    random_init = False
+    m = [3,1]
+    random_init = True
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(4,8)]
+    nsteps_arr = [2**i for i in range(3,7)]
     
-    only_uend = True
+    only_uend = False
     
     if only_uend:
         fname_errors = "data/errors_vanderpol_uend.pickle"
@@ -184,9 +185,11 @@ if __name__ == "__main__":
     else:
         fname_errors = "data/errors_vanderpol.pickle"
         figname = "figures/errors_vanderpol.png"
+        
+#    figname = "/home/kremling/Documents/Masterarbeit/master-thesis/masterarbeit/daten/graphics/errors_vanderpol"
     
     solve_vanderpol(m, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)
     if random_init:
         plot_errors(fname_errors, figname, order_sdc=lambda n: n, order_mlsdc=lambda n: n)
     else:
-        plot_errors(fname_errors, figname, order_sdc=lambda n: n+1, order_mlsdc=lambda n: 2*n+1)
+        plot_errors(fname_errors, figname, order_sdc=lambda n: n, order_mlsdc=lambda n: 2*n)

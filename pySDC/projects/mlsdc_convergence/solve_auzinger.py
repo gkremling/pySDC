@@ -32,7 +32,7 @@ def solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_error
     
     # initialize problem parameters
     problem_params = dict()
-    problem_params['newton_tol'] = 1E-10
+    problem_params['newton_tol'] = 1E-14
     problem_params['newton_maxiter'] = 100
     problem_params['nvars'] = 2 # number of degrees of freedom
     
@@ -145,20 +145,20 @@ def solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_error
             print('MLSDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_mlsdc, order_uend_mlsdc))
     
     # compute, save and print order of the ratio between U-U^(k) and U-U^(k-1)
-    error_k_sdc = {}
-    error_k_mlsdc = {}
-    # iterate over k
-    for j, niter in enumerate(niter_arr[:-1]):
-        print("relation between U-U^%d and U-U^%d" % (niter, niter_arr[j+1]))
-        # iterate over dt
-        for i, nsteps in enumerate(nsteps_arr):
-            error_k_sdc[nsteps] = error_sdc[(niter_arr[j+1], nsteps)] / error_sdc[(niter, nsteps)]
-            order = log(error_k_sdc[nsteps_arr[i-1]]/error_k_sdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print("SDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_sdc[nsteps], order))
-            
-            error_k_mlsdc[nsteps] = error_mlsdc[(niter_arr[j+1], nsteps)] / error_mlsdc[(niter, nsteps)]
-            order = log(error_k_mlsdc[nsteps_arr[i-1]]/error_k_mlsdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print("MLSDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_mlsdc[nsteps], order))
+#    error_k_sdc = {}
+#    error_k_mlsdc = {}
+#    # iterate over k
+#    for j, niter in enumerate(niter_arr[:-1]):
+#        print("relation between U-U^%d and U-U^%d" % (niter, niter_arr[j+1]))
+#        # iterate over dt
+#        for i, nsteps in enumerate(nsteps_arr):
+#            error_k_sdc[nsteps] = error_sdc[(niter_arr[j+1], nsteps)] / error_sdc[(niter, nsteps)]
+#            order = log(error_k_sdc[nsteps_arr[i-1]]/error_k_sdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+#            print("SDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_sdc[nsteps], order))
+#            
+#            error_k_mlsdc[nsteps] = error_mlsdc[(niter_arr[j+1], nsteps)] / error_mlsdc[(niter, nsteps)]
+#            order = log(error_k_mlsdc[nsteps_arr[i-1]]/error_k_mlsdc[nsteps])/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+#            print("MLSDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_mlsdc[nsteps], order))
     
     # save results in pickle files (needed to plot results)
     fout = open(fname_errors, "wb")
@@ -171,13 +171,14 @@ def solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_error
     print("results saved in: {}".format(fname_errors))
 
 
-if __name__ == "__main__":    
+def main():
+    global fig
     # set method params
-    m = [5,4] #2,1
-    random_init = False
+    m = [3,1] #2,1
+    random_init = True
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
-    nsteps_arr = [2**i for i in range(1,6)] #3,8
+    nsteps_arr = [2**i for i in range(4,8)] #3,8
     
     only_uend = False
     
@@ -188,18 +189,31 @@ if __name__ == "__main__":
         fname_errors = "data/errors_auzinger.pickle"
         figname = "figures/errors_auzinger.png"
     
-    figname = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_auzinger_initval"
+#    figname = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_auzinger_initval"
     
-    solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)
-    if random_init:
-        if not only_uend:
+    path = "/home/kremling/Documents/Masterarbeit/master-thesis/masterarbeit/daten/graphics/errors_auzinger"
+    figdict = ["", "_uend"]
+    
+    if 1 <= fig and fig <= 2:
+        figname = path + figdict[fig-1]
+        if fig == 1:
             order_sdc = lambda n: min(n, m[0]+1)
-            order_mlsdc = lambda n: min(n,m[0]+1)
-        else:
-            order_sdc = lambda n: n
-            order_mlsdc = lambda n: n
+            order_mlsdc = lambda n: min(n, m[0]+1)
+        elif fig == 2:
+            niter_arr = range(3,8)
+            only_uend = True
+            order_sdc = lambda n: min(n, 2*m[0])
+            order_mlsdc = lambda n: min(n, 2*m[0])
     else:
-        order_sdc = lambda n: n+1
-        order_mlsdc = lambda n: min(2*n+1, m[0]+1)
+        #whatsoever
+            order_sdc = lambda n: min(n, m[0]+1)
+            order_mlsdc = lambda n: min(n, m[0]+1)
     
+    solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)    
     plot_errors(fname_errors, figname, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
+
+if __name__ == "__main__":    
+    for fig in [1,2]:
+        main()
+    
+    

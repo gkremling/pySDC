@@ -1,6 +1,6 @@
 from pySDC.implementations.collocation_classes.gauss_radau_right import CollGaussRadau_Right
 from pySDC.implementations.problem_classes.Van_der_Pol_implicit import vanderpol
-from pySDC.implementations.sweeper_classes.generic_implicit import generic_implicit
+from sweeper_random_initial_guess import sweeper_random_initial_guess
 from pySDC.implementations.controller_classes.controller_nonMPI import controller_nonMPI
 
 from pySDC.helpers.stats_helper import filter_stats, sort_stats, get_list_of_types
@@ -12,19 +12,20 @@ import numpy as np
 def main():
     # initialize level parameters
     level_params = dict()
-    level_params['restol'] = 1e-12
+    level_params['restol'] = 1e-13
 
     # initialize sweeper parameters
     sweeper_params = dict()
     sweeper_params['collocation_class'] = CollGaussRadau_Right # Q
-    sweeper_params['num_nodes'] = 7 # M
+    sweeper_params['num_nodes'] = 3 # M
     sweeper_params['QI'] = 'IE' # Q_delta
+    sweeper_params['initial_guess'] = 'random'
 
     # initialize problem parameters
     problem_params = dict()
-    problem_params['newton_tol'] = 1E-12
-    problem_params['newton_maxiter'] = 50
-    problem_params['mu'] = 5
+    problem_params['newton_tol'] = 1E-13
+    problem_params['newton_maxiter'] = 100
+    problem_params['mu'] = 2
     problem_params['u0'] = (1.0, 0)
     problem_params['nvars'] = 2
 
@@ -40,7 +41,7 @@ def main():
     description = dict()
     description['problem_class'] = vanderpol
     description['problem_params'] = problem_params
-    description['sweeper_class'] = generic_implicit
+    description['sweeper_class'] = sweeper_random_initial_guess
     description['sweeper_params'] = sweeper_params
     description['step_params'] = step_params
 
@@ -67,7 +68,7 @@ def main():
     ### UM GANZEN VEKTOR ZU VERGLEICHEN
     lsg = {}
     
-    nsteps_arr = [2**i for i in range(3,8)]
+    nsteps_arr = [2**i for i in range(1,12)]
     
     #verschiedene dt
     for i,nsteps in enumerate(nsteps_arr):
