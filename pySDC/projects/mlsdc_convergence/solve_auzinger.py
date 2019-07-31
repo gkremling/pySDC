@@ -184,10 +184,10 @@ def main():
     
     if only_uend:
         fname_errors = "data/errors_auzinger_uend.pickle"
-        figname = "figures/errors_auzinger_uend.png"
+        figname = "figures/errors_auzinger_uend.pdf"
     else:
         fname_errors = "data/errors_auzinger.pickle"
-        figname = "figures/errors_auzinger.png"
+        figname = "figures/errors_auzinger.pdf"
     
 #    figname = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_auzinger_initval"
     
@@ -195,7 +195,7 @@ def main():
     figdict = ["", "_uend"]
     
     if 1 <= fig and fig <= 2:
-        figname = path + figdict[fig-1]
+        figname = path + figdict[fig-1] + ".pdf"
         if fig == 1:
             order_sdc = lambda n: min(n, m[0]+1)
             order_mlsdc = lambda n: min(n, m[0]+1)
@@ -210,7 +210,7 @@ def main():
             order_mlsdc = lambda n: min(n, m[0]+1)
     
     solve_auzinger(m, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)    
-    plot_errors(fname_errors, figname, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
+    plot_errors(fname_errors, figname=None, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
 
 if __name__ == "__main__":    
     for fig in [1,2]:

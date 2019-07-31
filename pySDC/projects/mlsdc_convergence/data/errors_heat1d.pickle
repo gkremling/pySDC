@@ -41,7 +41,11 @@ Rp14
 s(I9
 =======
 tp9
+<<<<<<< HEAD
 bS'.\xc2dp\x04[F?'
+=======
+bS'*Z\x91\xc5x6\x91>'
+>>>>>>> changed png to pdf format for auzinger
 p10
 tp11
 Rp12
@@ -50,7 +54,11 @@ I8192
 tp13
 g3
 (g7
+<<<<<<< HEAD
 S'\xe3\x9aN\x1d\xc2\xf8=>'
+=======
+S'y[0\x8c\xfan\xe9='
+>>>>>>> changed png to pdf format for auzinger
 p14
 tp15
 Rp16
@@ -113,7 +121,11 @@ sS'niter_arr'
 =======
 g3
 (g7
+<<<<<<< HEAD
 S'\r\x08.k\xb6\xc6\xde>'
+=======
+S'\xd2\x01\xb1/\x9d\xbc\x98?'
+>>>>>>> changed png to pdf format for auzinger
 p18
 tp19
 Rp20
@@ -122,7 +134,11 @@ I2048
 tp21
 g3
 (g7
+<<<<<<< HEAD
 S'W\xcf\xcc\xae\xb9M\xd5?'
+=======
+S'dq\x00\xd1o\xee\xa8>'
+>>>>>>> changed png to pdf format for auzinger
 p22
 tp23
 Rp24
@@ -131,7 +147,11 @@ I2048
 tp25
 g3
 (g7
+<<<<<<< HEAD
 S'Xw\xa4z.\xfa\xf0>'
+=======
+S'\xd2\x0e1\xd7\x8c\xc3x?'
+>>>>>>> changed png to pdf format for auzinger
 p26
 tp27
 Rp28
@@ -140,7 +160,11 @@ I2048
 tp29
 g3
 (g7
+<<<<<<< HEAD
 S'\xa0\xd2\x97\x0e\x83\x07\x84?'
+=======
+S'\x01,\x95\xa8c\xb3\xa8?'
+>>>>>>> changed png to pdf format for auzinger
 p30
 tp31
 Rp32
@@ -149,6 +173,7 @@ I4096
 tp33
 g3
 (g7
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 S'\xe8\xca?9\xbc\xe6\xf3='
@@ -180,6 +205,9 @@ S'\x00\x00\x00\x00\x00\x00\xc0<'
 =======
 =======
 S'\xb1<\x069\xf4\t<>'
+=======
+S'\xd9\x9d\x9am\xd7\xdc">'
+>>>>>>> changed png to pdf format for auzinger
 p34
 tp35
 Rp36
@@ -189,7 +217,7 @@ I2097152
 tp37
 g3
 (g7
-S'\xb2\xa2F&\x08\x15\xd3='
+S'\xd2\x11\x0e\x06\xe2r\xb9='
 p38
 =======
 S'\x0fqu\xfc\x84+\r?'
@@ -212,17 +240,27 @@ g3
 (g7
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 S'\xfe\xd2\x18\xfd\x01\x0f"='
 >>>>>>> changed boundaries for allencahn (and init_val)
+=======
+S'\xb07\xd89\x00\x04\x02='
+>>>>>>> changed png to pdf format for auzinger
 p42
 tp43
 Rp44
 s(I5
 I8192
 tp45
+<<<<<<< HEAD
 g2
 (g6
 S'\xf8*\xb4\xa2\xd9\xa7\xb5>'
+=======
+g3
+(g7
+S'\xfa\xef"6\xa7\x1a\x11?'
+>>>>>>> changed png to pdf format for auzinger
 p46
 tp47
 <<<<<<< HEAD
@@ -335,7 +373,11 @@ I2048
 tp49
 g3
 (g7
+<<<<<<< HEAD
 S"'\n\xa5W[\xc5\xbc>"
+=======
+S'\x90\x11\x81\xad\x942y>'
+>>>>>>> changed png to pdf format for auzinger
 p50
 tp51
 Rp52
@@ -344,7 +386,11 @@ I1024
 tp53
 g3
 (g7
+<<<<<<< HEAD
 S'\xaad\xf9\x86V\xa6e?'
+=======
+S' \x0c\xe8\x06\x01UI>'
+>>>>>>> changed png to pdf format for auzinger
 p54
 tp55
 Rp56
@@ -353,30 +399,45 @@ I1024
 tp57
 g3
 (g7
+<<<<<<< HEAD
 S'\xeb.\xb5\x7f\x08\xd6\xe3?'
 p58
 tp59
 Rp60
 s(I4
 I4096
+=======
+S'\x00\xe8%\xb4\\-\x9d='
+p60
+>>>>>>> changed png to pdf format for auzinger
 tp61
 g3
 (g7
+<<<<<<< HEAD
 S'Q\xb6O\x9f\xab\x9c\xb3>'
 p62
 tp63
 Rp64
 s(I1
 I4096
+=======
+S'\xf4D\xe18B\xfd0?'
+p64
+>>>>>>> changed png to pdf format for auzinger
 tp65
 g3
 (g7
+<<<<<<< HEAD
 S'U\x0f\xe3-\xc54\xc6?'
 p66
 tp67
 Rp68
 s(I5
 I1024
+=======
+S'\x00O\x8c\\\x1fH\xa3='
+p68
+>>>>>>> changed png to pdf format for auzinger
 tp69
 g3
 (g7
@@ -396,21 +457,43 @@ I1024
 tp75
 g3
 (g7
+<<<<<<< HEAD
 S'\x0e+\xf3\xc9h\xa2\xa1?'
+=======
+S'\xeb\x81\xf4\xa3\xf7#\xe3='
+p72
+tp73
+Rp74
+sS'type'
+p75
+S'SDC'
+>>>>>>> changed png to pdf format for auzinger
 p76
 tp77
+<<<<<<< HEAD
 Rp78
 s(I3
 I2048
+=======
+g3
+(g7
+S'\xfd\xb7K\xcc\x8b:$='
+p78
+>>>>>>> changed png to pdf format for auzinger
 tp79
 g3
 (g7
+<<<<<<< HEAD
 S'"g\x07\x0c\'B:?'
 p80
 tp81
 Rp82
 s(I2
 I4096
+=======
+S'\xa20\t\x16"\x92M='
+p82
+>>>>>>> changed png to pdf format for auzinger
 tp83
 <<<<<<< HEAD
 Rp84
@@ -422,17 +505,26 @@ tp85
 >>>>>>> changed heat1d results (for master-thesis chapter 3)
 g3
 (g7
+<<<<<<< HEAD
 S'\xdct\xe7=\x9f\x88e?'
 p84
 tp85
 Rp86
 s(I4
 I1024
+=======
+S'a,\xb3\xf9 \xe8\r='
+p86
+>>>>>>> changed png to pdf format for auzinger
 tp87
 g3
 (g7
 <<<<<<< HEAD
+<<<<<<< HEAD
 S'Z\x04*\xfc5\xc2\xe9>'
+=======
+S'\xf6\xe3\x16?\xe30\xd1>'
+>>>>>>> changed png to pdf format for auzinger
 p90
 tp91
 Rp92
@@ -441,6 +533,7 @@ I65536
 tp93
 g3
 (g7
+<<<<<<< HEAD
 <<<<<<< HEAD
 S'ND"m\xd5)\xd3>'
 p70
@@ -516,6 +609,9 @@ S'\x00\x00\x00\x0c\x94iK>'
 =======
 =======
 S'\xab\xab\n\x9epS\xd2?'
+=======
+S'\x18\xb7\xad\x19\x05\xa1\xb8?'
+>>>>>>> changed png to pdf format for auzinger
 p94
 tp95
 Rp96
@@ -524,7 +620,7 @@ I524288
 tp97
 g3
 (g7
-S'\x85\x1f\x9d\xd92\x8c\xa2?'
+S'\x98[\x87\x86<\xc1\x88?'
 p98
 tp99
 Rp100
@@ -533,7 +629,7 @@ I2097152
 tp101
 g3
 (g7
-S'\xed\xae\xf1\xcbX\x92\x82?'
+S'\xd2\x13\xe3(\xb5\xc4h?'
 p102
 tp103
 Rp104
@@ -542,7 +638,7 @@ I524288
 tp105
 g3
 (g7
-S'\x08\xb7\xfd\xd7O\x073>'
+S'q\x06d\xecLf\x19>'
 p106
 tp107
 Rp108
@@ -551,7 +647,7 @@ I2097152
 tp109
 g3
 (g7
-S'\xbe\xf0\xdc%\x9c\xc2\x07='
+S'\xbb\xab\x03\xd9H\xcd\xff<'
 p110
 tp111
 Rp112
@@ -569,7 +665,7 @@ I262144
 tp115
 g3
 (g7
-S'\xae\x8f\xc3^X\xcb&='
+S'\x9e\xaf\xb0@\x82\xe4\x0e='
 p116
 tp117
 Rp118
@@ -578,7 +674,7 @@ I1048576
 tp119
 g3
 (g7
-S'\nO\xa2\x05\x04\x90"='
+S'"\xa3\x97Z\x05$\x05='
 p120
 tp121
 Rp122
@@ -587,7 +683,7 @@ I524288
 tp123
 g3
 (g7
-S'EX\xb1Z\xb3\x07}='
+S'\xdba\xf9LOWc='
 p124
 tp125
 Rp126
@@ -596,7 +692,7 @@ I262144
 tp127
 g3
 (g7
-S'\x80\xf0h\xc7\xfb\xaf\t?'
+S'\xa6\xf5\xd6Eu)\xf1>'
 p128
 tp129
 Rp130
@@ -615,18 +711,30 @@ tp91
 >>>>>>> changed heat1d results (for master-thesis chapter 3)
 g3
 (g7
+<<<<<<< HEAD
 S'\xeaX\xc8\xd8\xce\xaf\xb6?'
 p92
 tp93
 Rp94
 sa(dp95
+=======
+S'2W\xcc\xf9\x9b4\xb1>'
+p132
+tp133
+Rp134
+sa(dp135
+>>>>>>> changed png to pdf format for auzinger
 (I2
 I8192
 tp96
 g3
 (g7
 <<<<<<< HEAD
+<<<<<<< HEAD
 S'\xb6\x9a\xee\x89\xec\xcf\xa9>'
+=======
+S'2Z\x91\xc5x6\x91>'
+>>>>>>> changed png to pdf format for auzinger
 p137
 tp138
 Rp139
@@ -635,6 +743,7 @@ I1048576
 tp140
 g3
 (g7
+<<<<<<< HEAD
 <<<<<<< HEAD
 S'\x0f#b\xc49\x8e(='
 >>>>>>> changed boundaries for allencahn (and init_val)
@@ -754,33 +863,54 @@ tp140
 g2
 (g6
 S"p\xbb:\x05\\'\xc1="
+=======
+S'y[0\x8c\xfan\xe9='
+>>>>>>> changed png to pdf format for auzinger
 p141
 tp142
 Rp143
 s(I11
 I512
 tp144
+<<<<<<< HEAD
 g2
 (g6
 S'Z^\x98$\xc2\xe3@>'
+=======
+g3
+(g7
+S'\xf2\x01\xb1/\x9d\xbc\x98?'
+>>>>>>> changed png to pdf format for auzinger
 p145
 tp146
 Rp147
 s(I9
 I512
 tp148
+<<<<<<< HEAD
 g2
 (g6
 S'%jkO\xc3\xe3@>'
+=======
+g3
+(g7
+S'dq\x10\xd1o\xee\xa8>'
+>>>>>>> changed png to pdf format for auzinger
 p149
 tp150
 Rp151
 s(I7
 I2048
 tp152
+<<<<<<< HEAD
 g2
 (g6
 S'\x87"\xeb\xec\x8f\'\xc1='
+=======
+g3
+(g7
+S'\xd2\x0e1\xd7\x8c\xc3x?'
+>>>>>>> changed png to pdf format for auzinger
 p153
 tp154
 Rp155
@@ -803,6 +933,7 @@ p141
 tp142
 Rp143
 s(I1
+<<<<<<< HEAD
 I262144
 tp144
 >>>>>>> changed some stuff (mainly for auzinger and vanderpol)
@@ -821,11 +952,31 @@ S'\xee5s%\xfb\xf9=>'
 p101
 tp102
 Rp103
+=======
+I131072
+tp156
+g3
+(g7
+S'\x01,\x95\xa8c\xb3\xa8?'
+p157
+tp158
+Rp159
+s(I4
+I65536
+tp160
+g3
+(g7
+S'l\x1d\x9bm\xd7\xdc">'
+p161
+tp162
+Rp163
+>>>>>>> changed png to pdf format for auzinger
 s(I3
 I8192
 tp104
 g3
 (g7
+<<<<<<< HEAD
 S'\xd8\xabZ\x07\xca\xa3\xe3>'
 p105
 tp106
@@ -857,11 +1008,45 @@ S'\xddTX]\xa78\x89?'
 p117
 tp118
 Rp119
+=======
+S'\xb7\x11\x12\x06\xe2r\xb9='
+p165
+tp166
+Rp167
+s(I5
+I2097152
+tp168
+g3
+(g7
+S'\xb07\xd89\x00\x04\x02='
+p169
+tp170
+Rp171
+s(I2
+I131072
+tp172
+g3
+(g7
+S'\xfa\xef"6\xa7\x1a\x11?'
+p173
+tp174
+Rp175
+s(I3
+I131072
+tp176
+g3
+(g7
+S'\x8f\x13\x81\xad\x942y>'
+p177
+tp178
+Rp179
+>>>>>>> changed png to pdf format for auzinger
 s(I3
 I4096
 tp120
 g3
 (g7
+<<<<<<< HEAD
 S'\xdb\x9e\xe8\xb4\xb0s\x12?'
 p121
 tp122
@@ -877,11 +1062,47 @@ S'\x06\xd7\x14N\x90\x99}>'
 p125
 tp126
 Rp127
+=======
+S' \x0c(\x07\x01UI>'
+p181
+tp182
+Rp183
+sg57
+g58
+s(I5
+I65536
+tp184
+g3
+(g7
+S't\x0e%\xb5\\-\x9d='
+p185
+tp186
+Rp187
+s(I2
+I65536
+tp188
+g3
+(g7
+S'\xf5D\xe18B\xfd0?'
+p189
+tp190
+Rp191
+s(I4
+I262144
+tp192
+g3
+(g7
+S'\x00O\x8c\\\x1fH\xa3='
+p193
+tp194
+Rp195
+>>>>>>> changed png to pdf format for auzinger
 s(I4
 I8192
 tp128
 g3
 (g7
+<<<<<<< HEAD
 S'\xf5x{\xd4\x039{>'
 p129
 tp130
@@ -889,11 +1110,30 @@ Rp131
 sg47
 S'MLSDC'
 p132
+=======
+S'\x9f\x83\xf0\xa3\xf7#\xe3='
+p197
+tp198
+Rp199
+sg75
+S'MLSDC'
+p200
+s(I4
+I1048576
+tp201
+g3
+(g7
+S'\xcaJK\xd4\x8b:$='
+p202
+tp203
+Rp204
+>>>>>>> changed png to pdf format for auzinger
 s(I5
 I2048
 tp133
 g3
 (g7
+<<<<<<< HEAD
 S'\x02\xc8\xe4\xd3\xe5\xca\xbc>'
 p134
 tp135
@@ -925,11 +1165,45 @@ S'd!m\xed\x1b\x08\xb9>'
 p146
 tp147
 Rp148
+=======
+S'\xa20\t\x16"\x92M='
+p206
+tp207
+Rp208
+s(I5
+I524288
+tp209
+g3
+(g7
+S'a,\xb3\xf9 \xe8\r='
+p210
+tp211
+Rp212
+s(I2
+I524288
+tp213
+g3
+(g7
+S'\xf6\xe3\x16?\xe30\xd1>'
+p214
+tp215
+Rp216
+s(I1
+I65536
+tp217
+g3
+(g7
+S'\x14\xb7\xad\x19\x05\xa1\xb8?'
+p218
+tp219
+Rp220
+>>>>>>> changed png to pdf format for auzinger
 s(I1
 I4096
 tp149
 g3
 (g7
+<<<<<<< HEAD
 S'\x9beS$\x84\xcb\xc6?'
 p150
 tp151
@@ -985,6 +1259,36 @@ Rp168
 =======
 =======
 S'"\xba\xdc5\x9c\xc2\x07='
+=======
+S'\x98[\x87\x86<\xc1\x88?'
+p222
+tp223
+Rp224
+s(I1
+I2097152
+tp225
+g3
+(g7
+S'\xd2\x13\xe3(\xb5\xc4h?'
+p226
+tp227
+Rp228
+s(I3
+I524288
+tp229
+g3
+(g7
+S't\xe6c\xecLf\x19>'
+p230
+tp231
+Rp232
+s(I4
+I2097152
+tp233
+g3
+(g7
+S'\xbb\xab\x03\xd9H\xcd\xff<'
+>>>>>>> changed png to pdf format for auzinger
 p234
 tp235
 Rp236
@@ -1004,6 +1308,7 @@ tp161
 >>>>>>> changed heat1d results (for master-thesis chapter 3)
 g3
 (g7
+<<<<<<< HEAD
 S'4\xbej\xed\xd7m@?'
 p162
 tp163
@@ -1017,6 +1322,21 @@ S'\x07\xbcmL\xdb]k?'
 p166
 tp167
 Rp168
+=======
+S'bh\x95\xc0\x82\xe4\x0e='
+p238
+tp239
+Rp240
+s(I5
+I1048576
+tp241
+g3
+(g7
+S'"\xa3\x97Z\x05$\x05='
+p242
+tp243
+Rp244
+>>>>>>> changed png to pdf format for auzinger
 s(I4
 <<<<<<< HEAD
 I524288
@@ -1028,6 +1348,7 @@ tp169
 >>>>>>> changed heat1d results (for master-thesis chapter 3)
 g3
 (g7
+<<<<<<< HEAD
 S'\xc8\x8f\x1a\xc4\xd6\xab/?'
 p170
 tp171
@@ -1046,6 +1367,27 @@ Rp176
 >>>>>>> changed boundaries for allencahn (and init_val)
 =======
 S'b\xd1;PY\xcb\xc9>'
+=======
+S'\xdba\xf9LOWc='
+p246
+tp247
+Rp248
+s(I2
+I262144
+tp249
+g3
+(g7
+S'\xa6\xf5\xd6Eu)\xf1>'
+p250
+tp251
+Rp252
+s(I2
+I1048576
+tp253
+g3
+(g7
+S'2W\xcc\xf9\x9b4\xb1>'
+>>>>>>> changed png to pdf format for auzinger
 p254
 tp255
 Rp256
