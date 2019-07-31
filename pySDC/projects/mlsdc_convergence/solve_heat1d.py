@@ -4,6 +4,7 @@ from pySDC.implementations.problem_classes.HeatEquation_1D_FD import heat1d
 from sweeper_random_initial_guess import sweeper_random_initial_guess
 from pySDC.implementations.transfer_classes.TransferMesh import mesh_to_mesh
 from pySDC.implementations.controller_classes.controller_nonMPI import controller_nonMPI
+from pySDC.helpers.stats_helper import get_list_of_types
 
 # ... and other packages
 import pickle
@@ -198,8 +199,6 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
 def main():
     global fig
     
-#    fig = 1    
-    
     # set problem params
     nu = 0.1
     freq = 4 #24
@@ -207,7 +206,7 @@ def main():
     
     # set method params
     m = [5,5]
-    random_init = False
+    init_val = "zero" #"spread"
     iorder = 8
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
@@ -240,7 +239,7 @@ def main():
             order_sdc=lambda k: min(k+1, m[0]+1)
             order_mlsdc=lambda k: min(k, m[0]+1)
         elif fig == 4:
-            random_init = True
+            init_val = "random"
             nsteps_arr = [2**i for i in range(16,20)]
             order_sdc=lambda k: min(k, m[0]+1)
             order_mlsdc=lambda k: min(k, m[0]+1)
@@ -251,15 +250,18 @@ def main():
             order_mlsdc = lambda k: min(k, m[0]+1)
     else:
         #whatsoever
+        init_val = "zero"
+        nsteps_arr = [2**i for i in range(14,18)]
         order_sdc=lambda k: min(k+1, m[0]+1)
-        order_mlsdc=lambda k: min(2*k+1, m[0]+1)
+        order_mlsdc=lambda k: min(k+1, m[0]+1)
     
-    solve_heat1d(m, n, iorder, nu, freq, random_init, niter_arr, nsteps_arr, only_uend, fname_errors)
-    plot_errors(fname_errors, figname, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
+    solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_uend, fname_errors)
+    plot_errors(fname_errors, figname=None, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
     
 
 if __name__ == "__main__":
-    for fig in range(1,6):
-        main()
+#    for fig in range(1,6):
+    fig = 0
+    main()
     
     
