@@ -165,12 +165,12 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
             err_uend_sdc = np.linalg.norm(u_ode[-1] - uend_sdc.values)
             error_uend_sdc[(niter, nsteps)] = err_uend_sdc
             order_uend_sdc = log(error_uend_sdc[(niter, nsteps_arr[i-1])]/err_uend_sdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print('SDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_sdc, order_uend_sdc))
+#            print('SDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_sdc, order_uend_sdc))
             
             err_uend_mlsdc = np.linalg.norm(u_ode[-1] - uend_mlsdc.values)
             error_uend_mlsdc[(niter, nsteps)] = err_uend_mlsdc
             order_uend_mlsdc = log(error_uend_mlsdc[(niter, nsteps_arr[i-1])]/err_uend_mlsdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print('MLSDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_mlsdc, order_uend_mlsdc))
+#            print('MLSDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_mlsdc, order_uend_mlsdc))
     
     # compute, save and print order of the ratio between U-U^(k) and U-U^(k-1)
 #    error_k_sdc = {}
@@ -259,16 +259,24 @@ def main():
             order_mlsdc = lambda k: min(k, m[0]+1)
     else:
         #whatsoever
-        only_uend = False
+        figname = "/home/kremling/Documents/Masterarbeit/master-thesis/masterarbeit/daten/graphics/errors_heat1d_spat_discr.pdf"
         init_val = "random"
-        nu = 0.01
-        freq = 2
-        m = [2,1]
-        n = [127,127]
-        niter_arr = range(1,6)
-        nsteps_arr = [2**i for i in range(16,22)]
-        order_sdc=lambda k: min(k, m[0]+1)
-        order_mlsdc=lambda k: min(k, m[0]+1)
+        nu = 0.1
+        freq = 16
+        m = [3,3]
+        n = [31,15]
+        nsteps_arr = [2**i for i in range(10,14)]
+        
+        only_uend = False
+        if only_uend:
+            niter_arr = range(3,8)
+            order_sdc=lambda k: min(k, 2*m[0])
+            order_mlsdc=lambda k: min(k, 2*m[0])
+        else:
+            niter_arr = range(1,6)
+            order_sdc=lambda k: min(k, m[0]+1)
+            order_mlsdc=lambda k: min(k, m[0]+1)
+            
     
     solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_uend, fname_errors)
     plot_errors(fname_errors, figname=None, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
