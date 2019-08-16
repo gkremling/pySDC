@@ -220,7 +220,7 @@ def main():
     niter_arr = range(1,6)
     nsteps_arr = [2**i for i in range(6,10)] #15,19
     
-    only_uend = False
+    only_uend = True
     
     if only_uend:
         fname_errors = "data/errors_heat1d_uend.pickle"
@@ -231,7 +231,7 @@ def main():
     
 #    path = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_heat1d_"
     path = "/home/zam/kremling/Documents/Arbeit/Vortrag_SciCADE/presentation/daten/graphics/errors_heat1d_" 
-    figdict = ["spread", "spread_psmall", "spread_dxbig", "random", "spread_freqhigh"]
+    figdict = ["spread", "spread_dxbig", "spread_psmall", "random", "spread_freqhigh"]
     
     if 1 <= fig and fig <= 5:
         figname = path + figdict[fig-1] + ".pdf"
@@ -239,12 +239,12 @@ def main():
             order_sdc=lambda k: min(k, m[0]+1)
             order_mlsdc=lambda k: min(2*k, m[0]+1)
         elif fig == 2:
-            iorder = 4
-            nsteps_arr = [2**i for i in range(14,18)]
+            n = [15, 7]
             order_sdc=lambda k: min(k, m[0]+1)
             order_mlsdc=lambda k: min(k, m[0]+1)
         elif fig == 3:
-            n = [15, 7]
+            iorder = 4
+            nsteps_arr = [2**i for i in range(14,18)]
             order_sdc=lambda k: min(k, m[0]+1)
             order_mlsdc=lambda k: min(k, m[0]+1)
         elif fig == 4:
@@ -265,9 +265,10 @@ def main():
         freq = 16
         m = [3,3]
         n = [31,15]
+        iorder = 2
         nsteps_arr = [2**i for i in range(10,14)]
         
-        only_uend = False
+        only_uend = True
         if only_uend:
             niter_arr = range(3,8)
             order_sdc=lambda k: min(k, 2*m[0])
@@ -283,8 +284,8 @@ def main():
     
 
 if __name__ == "__main__":
-#    for fig in range(1,6):
-    fig = 0
+#    for fig in range(1,5):
+    fig = 5
     main()
     
     
