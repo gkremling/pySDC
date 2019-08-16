@@ -223,7 +223,7 @@ def main():
     niter_arr = range(1,6)
     nsteps_arr = [2**i for i in range(6,10)] #15,19
     
-    only_uend = True
+    only_uend = False
     
     if only_uend:
         fname_errors = "data/errors_heat1d_uend.pickle"
@@ -233,8 +233,8 @@ def main():
         figname = "figures/errors_heat1d.pdf"
     
 #    path = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_heat1d_"
-    path = "/home/zam/kremling/Documents/Arbeit/Vortrag_SciCADE/presentation/daten/graphics/errors_heat1d_" 
-    figdict = ["spread", "spread_dxbig", "spread_psmall", "random", "spread_freqhigh"]
+    path = "/home/zam/kremling/Documents/Studium/Gitte/Master/Masterarbeit/masterarbeit/daten/graphics/errors_heat1d_" 
+    figdict = ["spread_nolines", "spread_dxbig", "spread_psmall", "random", "spread_freqhigh"]
     
     if 1 <= fig and fig <= 5:
         figname = path + figdict[fig-1] + ".pdf"
@@ -283,12 +283,12 @@ def main():
             
     
     solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_uend, fname_errors)
-    plot_errors(fname_errors, figname=None, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
+    plot_errors(fname_errors, figname, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
     
 
 if __name__ == "__main__":
 #    for fig in range(1,5):
-    fig = 5
+    fig = 1
     main()
     
     
