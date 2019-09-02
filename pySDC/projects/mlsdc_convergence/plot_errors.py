@@ -51,10 +51,10 @@ def plot_errors(fname_errors=["errors.pickle"], figname=None, order_sdc=lambda n
             axes[i].plot(dt_arr, [err[(niter,n)] for n in err['nsteps_arr']], color=color[j], marker=marker[j], markersize=10, linestyle='None', label='k={}'.format(niter))
             
             # erwartete Linie: err
-#            if err['type'] == 'SDC':
-#                axes[i].plot(dt_arr, [(err[(niter,err['nsteps_arr'][0])]/((nstep/err['nsteps_arr'][0])**(order_sdc(niter)))) for nstep in err['nsteps_arr']], color=color[j])
-#            elif err['type'] == 'MLSDC':
-#                axes[i].plot(dt_arr, [(err[(niter,err['nsteps_arr'][0])]/((nstep/err['nsteps_arr'][0])**(order_mlsdc(niter)))) for nstep in err['nsteps_arr']], color=color[j])
+            if err['type'] == 'SDC':
+                axes[i].plot(dt_arr, [(err[(niter,err['nsteps_arr'][0])]/((nstep/err['nsteps_arr'][0])**(order_sdc(niter)))) for nstep in err['nsteps_arr']], color=color[j])
+            elif err['type'] == 'MLSDC':
+                axes[i].plot(dt_arr, [(err[(niter,err['nsteps_arr'][0])]/((nstep/err['nsteps_arr'][0])**(order_mlsdc(niter)))) for nstep in err['nsteps_arr']], color=color[j])
             
         axes[i].set_xscale('log', basex=2)
         axes[i].set_yscale('log')
