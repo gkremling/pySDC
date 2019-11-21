@@ -86,7 +86,7 @@ class mesh_to_mesh(space_transfer):
                         th.interpolation_matrix_1d(fine_grid, coarse_grid, k=self.params.rorder,
                                                    periodic=self.params.periodic,
                                                    equidist_nested=self.params.equidist_nested).T
-
+                                                   
         # we have an n-d problem
         else:
 

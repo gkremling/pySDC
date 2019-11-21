@@ -21,9 +21,11 @@ class auzinger(ptype):
             dtype_u: mesh data type (will be passed to parent class)
             dtype_f: mesh data type (will be passed to parent class)
         """
+        if 'stiffness' not in problem_params:
+            problem_params['stiffness'] = 1
 
         # these parameters will be used later, so assert their existence
-        essential_keys = ['newton_maxiter', 'newton_tol']
+        essential_keys = ['newton_maxiter', 'newton_tol', 'stiffness']
         for key in essential_keys:
             if key not in problem_params:
                 msg = 'need %s to instantiate problem, only got %s' % (key, str(problem_params.keys()))
@@ -61,8 +63,8 @@ class auzinger(ptype):
         x1 = u.values[0]
         x2 = u.values[1]
         f = self.dtype_f(self.init)
-        f.values[0] = -x2 + x1 * (1 - x1 ** 2 - x2 ** 2)
-        f.values[1] = x1 + 3 * x2 * (1 - x1 ** 2 - x2 ** 2)
+        f.values[0] = -x2 + self.params.stiffness * x1 * (1 - x1 ** 2 - x2 ** 2)
+        f.values[1] = x1 + self.params.stiffness * 3 * x2 * (1 - x1 ** 2 - x2 ** 2)
         return f
 
     def solve_system(self, rhs, dt, u0, t):
@@ -89,8 +91,8 @@ class auzinger(ptype):
         while n < self.params.newton_maxiter:
 
             # form the function g with g(u) = 0
-            g = np.array([x1 - dt * (-x2 + x1 * (1 - x1 ** 2 - x2 ** 2)) - rhs.values[0],
-                          x2 - dt * (x1 + 3 * x2 * (1 - x1 ** 2 - x2 ** 2)) - rhs.values[1]])
+            g = np.array([x1 - dt * (-x2 + self.params.stiffness * x1 * (1 - x1 ** 2 - x2 ** 2)) - rhs.values[0],
+                          x2 - dt * (x1 + self.params.stiffness * 3 * x2 * (1 - x1 ** 2 - x2 ** 2)) - rhs.values[1]])
 
             # if g is close to 0, then we are done
             res = np.linalg.norm(g, np.inf)
@@ -99,8 +101,8 @@ class auzinger(ptype):
                 break
 
             # assemble dg and invert the matrix (yeah, I know)
-            dg = np.array([[1 - dt * (1 - 3 * x1 ** 2 - x2 ** 2), -dt * (-1 - 2 * x1 * x2)],
-                           [-dt * (1 - 6 * x1 * x2), 1 - dt * (3 - 3 * x1 ** 2 - 9 * x2 ** 2)]])
+            dg = np.array([[1 - dt * self.params.stiffness * (1 - 3 * x1 ** 2 - x2 ** 2), -dt * (-1 - self.params.stiffness * 2 * x1 * x2)],
+                           [-dt * (1 - self.params.stiffness * 6 * x1 * x2), 1 - dt * self.params.stiffness * (3 - 3 * x1 ** 2 - 9 * x2 ** 2)]])
 
             idg = np.linalg.inv(dg)
 
