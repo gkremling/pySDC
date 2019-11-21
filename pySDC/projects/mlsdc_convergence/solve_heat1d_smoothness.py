@@ -12,6 +12,8 @@ import pickle
 from math import log
 import numpy as np
 from plot_errors import plot_errors
+import matplotlib.pyplot as plt
+import operator
 
 
 def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_uend, fname_errors):
@@ -29,14 +31,15 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
     sweeper_params_sdc['num_nodes'] = m[0]
     sweeper_params_sdc['QI'] = 'IE'
     sweeper_params_sdc['initial_guess'] = init_val
+#    sweeper_params_sdc['do_coll_update'] = True
 
     sweeper_params_mlsdc = sweeper_params_sdc.copy()
     sweeper_params_mlsdc['num_nodes'] = m
 
     # initialize problem parameters
     problem_params_sdc = dict()
-    problem_params_sdc['nu'] = nu       # diffusion coefficient
-    problem_params_sdc['freq'] = freq   # frequency for the test value
+    problem_params_sdc['nu'] = nu  # diffusion coefficient
+    problem_params_sdc['freq'] = freq  # frequency for the test value
     problem_params_sdc['nvars'] = n[0]  # number of degrees of freedom
 
     problem_params_mlsdc = problem_params_sdc.copy()
@@ -53,6 +56,7 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
     # initialize controller parameters
     controller_params = dict()
     controller_params['logger_level'] = 30
+#    controller_params['predict'] = False
 
     # Fill description dictionary for easy hierarchy creation
     description_sdc = dict()
@@ -87,14 +91,16 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
     u_coll = {}
     error_coll = {}
 
-    # vary number of iterations (k)
+    x = np.arange(0, n[0])/(n[0]+1)
+
+    # vary number of iterations
     for niter in niter_arr:
         # set number of iterations
         step_params['maxiter'] = niter
         description_sdc['step_params'] = step_params
         description_mlsdc['step_params'] = step_params
 
-        # vary length of a time step (dt)
+        # vary length of a time step
         for i, nsteps in enumerate(nsteps_arr):
             # set time step
             dt = 1./nsteps
@@ -103,8 +109,8 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
             description_mlsdc['level_params'] = level_params
 
             # set end of time interval
-#            Tend = t0 + dt                  # only one time step is made (LTE / consistency)
-            Tend = t0 + 50./nsteps_arr[-1]  # several time steps are made (convergence)
+            Tend = t0 + dt                  # only one time step is made (LTE / consistency)
+#            Tend = t0 + 50./nsteps_arr[-1]  # several time steps are made (convergence)
 
             # print current parameters
             print('niter: %d\tnsteps: %f' % (niter, 1./nsteps))
@@ -130,10 +136,14 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
             L_mlsdc = controller_mlsdc.MS[0].levels[0]
             u_num_mlsdc = np.array([u.values for u in L_mlsdc.u])
 
-            # compute ode solution (by calling the function "u_exact()" of the problem at all quadrature nodes)
+#            print(np.linalg.norm(controller_mlsdc.MS[0].levels[0].sweep.QI, ord=np.inf))
+#            print(np.linalg.norm(controller_mlsdc.MS[0].levels[1].sweep.QI, ord=np.inf))
+
+            # compute ode solution (by calling the exact function of the problem at all quadrature nodes)
             nodes = [0]
             nodes.extend(L_sdc.sweep.coll.nodes)
             u_ode = np.array([P.u_exact(L_sdc.time + c*L_sdc.dt).values for c in nodes])
+#            uend_ode = P.u_exact(Tend).values
             uend_ode = u_ode[-1]
 
             # compute, save and print ode error and resulting order in dt
@@ -157,6 +167,35 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
                 err_coll = np.linalg.norm(u_coll[nsteps] - u_ode.flatten(), ord=np.inf)
                 error_coll[nsteps] = err_coll
 
+            
+
+            # smoothness of the error
+#            print("u_coll", u_coll[nsteps].reshape(m[0]+1, n[0]))
+#            print("u_num_sdc", u_num_sdc)
+            e_vec = u_coll[nsteps].reshape(m[0]+1, n[0]) - u_num_mlsdc
+#            print("e_vec", e_vec)
+            plt.plot(x, u_coll[nsteps][:n[0]], label="u_coll")
+            plt.plot(x, u_num_mlsdc[0], label="u_mlsdc")
+            plt.legend()
+            plt.show()
+            
+            for m, e in enumerate(e_vec):
+                if m>1:
+                    plt.plot(x, e, label=r"$\tau_{}$".format(m))
+                    plt.legend()
+                    plt.show()
+#                    print(np.linalg.norm(np.fft.fft(np.fft.ifft(e)) - e))
+#                    print(np.max(np.abs(np.fft.ifft(e))))
+                    epsm = np.cumsum(np.abs(np.fft.ifft(e)))
+                    Em = epsm[-1]*np.ones(len(epsm)) - epsm
+                    poss = [2 * np.power(l, iorder) * Em[l] / epsm[l] + (Em[l]*Em[l]) / (epsm[l]*epsm[l]) for l in range(int(len(epsm)/2))]
+                    min_index, min_value = min(enumerate(poss), key=operator.itemgetter(1))
+                    print("!!Integer Overflow!!" if np.any(poss < np.zeros(len(poss))) else "")
+                    print("N_0 =", min_index)
+                    print("C(E) =", np.sqrt(min_value))
+                    print("eps_m =", epsm[min_index])
+                    print("sum(abs(c_{m,l})) =", epsm[-1])
+            
             # compute, save and print collocation error and resulting order in dt
             err_coll_sdc = np.linalg.norm(u_coll[nsteps] - u_num_sdc.flatten(), ord=np.inf)
             error_coll_sdc[(niter, nsteps)] = err_coll_sdc
@@ -165,30 +204,31 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
 #            print('SDC:\tu_coll:\terror: %8.6e\torder:%4.2f' % (err_coll_sdc, order_coll_sdc))
 
             err_coll_mlsdc = np.linalg.norm(u_coll[nsteps] - u_num_mlsdc.flatten(), ord=np.inf)
+#            err_coll_mlsdc = np.linalg.norm(u_coll[nsteps][-n[0]:] - u_ode[-1], ord=np.inf)
             error_coll_mlsdc[(niter, nsteps)] = err_coll_mlsdc
             order_coll_mlsdc = log(error_coll_mlsdc[(niter, nsteps_arr[i-1])] / err_coll_mlsdc) / \
                 log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
 #            print('MLSDC:\tu_coll:\terror: %8.6e\torder:%4.2f' % (err_coll_mlsdc, order_coll_mlsdc))
-
+#            
             # compute, save and print ode error at the last quadrature node
-            err_uend_sdc = np.linalg.norm(uend_ode - uend_sdc.values, ord=np.inf)
+            err_uend_sdc = np.linalg.norm(uend_ode - uend_sdc.values)
             error_uend_sdc[(niter, nsteps)] = err_uend_sdc
             order_uend_sdc = log(error_uend_sdc[(niter, nsteps_arr[i-1])] / err_uend_sdc) / \
                 log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print('SDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_sdc, order_uend_sdc))
+#            print('SDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_sdc, order_uend_sdc))
 
-            err_uend_mlsdc = np.linalg.norm(uend_ode - uend_mlsdc.values, ord=np.inf)
+            err_uend_mlsdc = np.linalg.norm(uend_ode - uend_mlsdc.values)
             error_uend_mlsdc[(niter, nsteps)] = err_uend_mlsdc
             order_uend_mlsdc = log(error_uend_mlsdc[(niter, nsteps_arr[i-1])] /
                                    err_uend_mlsdc)/log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-            print('MLSDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_mlsdc, order_uend_mlsdc))
+#            print('MLSDC:\tu_end:\terror: %8.6e\torder:%4.2f' % (err_uend_mlsdc, order_uend_mlsdc))
 
 
     # compute and print order of the collocation problem
-    for i, nsteps in enumerate(nsteps_arr):
-        order_coll = log(error_coll[nsteps_arr[i-1]] / error_coll[nsteps]) / \
-            log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
-        print('COLL:\terror: %8.6e\torder:%4.2f' % (error_coll[nsteps], order_coll))
+#    for i, nsteps in enumerate(nsteps_arr):
+#        order_coll = log(error_coll[nsteps_arr[i-1]] / error_coll[nsteps]) / \
+#            log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
+#        print('COLL:\terror: %8.6e\torder:%4.2f' % (error_coll[nsteps], order_coll))
 
     # compute, save and print order of the ratio between U-U^(k) and U-U^(k-1)
 #    error_k_sdc = {}
@@ -214,6 +254,11 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
         pickle.dump([error_ode_sdc, error_ode_mlsdc], fout)
     fout.close()
 
+#    print([t0+i*dt for i in range(0,4)])
+#    print(len(controller_sdc.MS))
+#    print([l.time for l in controller_sdc.MS])
+#    print(uend_sdc.values)
+
     print("results saved in: {}".format(fname_errors))
 
 
@@ -227,83 +272,91 @@ def main():
 
     # set method params
     m = [5, 5]
-    init_val = "zero"  # "spread"
+    init_val = "spread"  # "spread"
     iorder = 8
-    
     # set number of iterations and time steps which shall be analysed
     niter_arr = range(1,6)
     nsteps_arr = [2**i for i in range(6,10)]  # 15,19
 
     only_uend = True
-    
-    respath = "data/errors_heat1d_"
-    figpath = "figures/errors_heat1d_"
-    figoption = ["spread", "spread_dxbig", "spread_psmall", "random", "spread_freqhigh", "temp_discr", "temp_discr_uend"]
+
+    if only_uend:
+        fname_errors = "data/errors_heat1d_uend.pickle"
+        figname = "figures/errors_heat1d_uend.pdf"
+    else:
+        fname_errors = "data/errors_heat1d.pickle"
+        figname = "figures/errors_heat1d.pdf"
+
+#    path = "/home/kremling/Documents/Masterarbeit/presentation-scicade/daten/graphics/errors_heat1d_"
+#    path = "/home/zam/kremling/Documents/Arbeit/Vortrag_SciCADE/presentation/daten/graphics/errors_heat1d_"
+    path = "figures/errors_heat1d_"
+    figdict = ["temp_discr", "temp_discr_uend", "spread", "spread_dxbig", "spread_psmall", "random", "spread_freqhigh"]
 
     if 1 <= fig and fig <= 7:
-        figname = figpath + figoption[fig-1] + ".pdf"
-        fname_errors = respath + figoption[fig-1] + ".pickle"
-        
-        if fig == 1:
-            # optimal params: dx small, p high, init guess smooth
-            def order_sdc(k): return min(k, 2*m[0])-1
-            def order_mlsdc(k): return min(2*k, 2*m[0])-1
-        elif fig == 2:
-            # dx big
-            n = [15, 7]
-            nsteps_arr = [2**i for i in range(7, 11)]
-            def order_sdc(k): return min(k, 2*m[0])-1
-            def order_mlsdc(k): return min(k, 2*m[0])-1
-        elif fig == 3:
-            # p low
-            iorder = 4
-            nsteps_arr = [2**i for i in range(15, 19)]
-            def order_sdc(k): return min(k, 2*m[0])-1
-            def order_mlsdc(k): return min(k, 2*m[0])-1
-        elif fig == 4:
-            # random initial guess
-            init_val = "random"
-            nsteps_arr = [2**i for i in range(16, 20)]
-            def order_sdc(k): return min(k, 2*m[0])-1
-            def order_mlsdc(k): return min(k, 2*m[0])-1
-        elif fig == 5:
-            # initial guess not smooth
-            freq = 24
-            nsteps_arr = [2**i for i in range(14, 18)]
-            def order_sdc(k): return min(k, 2*m[0])-1
-            def order_mlsdc(k): return min(k, 2*m[0])-1
-        elif fig in [6,7]:
+        figname = path + figdict[fig-1] + ".pdf"
+        if fig in [1,2]:
             freq = 16
             n = [31, 31]
             m = [3, 1]
             init_val = "random"
             nsteps_arr = [2**i for i in range(10,14)]
-            if fig == 6:
+            if fig == 1:
                 def order_sdc(k): return min(k, m[0]+1)
                 def order_mlsdc(k): return min(k, m[0]+1)
-            elif fig == 7:
+            elif fig == 2:
                 niter_arr = range(3,8)
                 only_uend = True
                 def order_sdc(k): return min(k+1, 2*m[0]+1)
                 def order_mlsdc(k): return min(k+1, 2*m[0]+1)
+        elif fig == 3:
+            def order_sdc(k): return min(k, 2*m[0])-1
+            def order_mlsdc(k): return min(2*k, 2*m[0])-1
+        elif fig == 4:
+            n = [15, 7]
+            nsteps_arr = [2**i for i in range(7, 11)]
+            def order_sdc(k): return min(k, 2*m[0])-1
+            def order_mlsdc(k): return min(k, 2*m[0])-1
+        elif fig == 5:
+            iorder = 4
+            nsteps_arr = [2**i for i in range(15, 19)]
+            def order_sdc(k): return min(k, 2*m[0])-1
+            def order_mlsdc(k): return min(k, 2*m[0])-1
+        elif fig == 6:
+            init_val = "random"
+            nsteps_arr = [2**i for i in range(16, 20)]
+            def order_sdc(k): return min(k, 2*m[0])-1
+            def order_mlsdc(k): return min(k, 2*m[0])-1
+        elif fig == 7:
+            freq = 24
+            nsteps_arr = [2**i for i in range(14, 18)]
+            def order_sdc(k): return min(k, 2*m[0])-1
+            def order_mlsdc(k): return min(k, 2*m[0])-1
     else:
         # whatsoever
-        figname = None
-        m = [8,6]
-        n = [256,256]
-#        nsteps_arr = [2**i for i in range(10,14)]
-        
-        def order_sdc(n): return min(n, 2*m[0])-1
-        def order_mlsdc(n): return min(2*n, 2*m[0])-1
-        
-        fname_errors = "errors_auzinger.pickle"
-        figname = None
+        figname = "/home/kremling/Documents/Masterarbeit/master-thesis/masterarbeit/daten/graphics/errors_heat1d_spat_discr.pdf"
+        init_val = "zero"
+#        nu = 0.1
+#        freq = 2
+#        m = [5,5]
+#        n = [255,127]
+#        iorder = 8
+        niter_arr = range(3,4)
+        nsteps_arr = [2**i for i in range(7,8)]
 
+        only_uend = True
+        if only_uend:
+            def order_sdc(k): return min(k, 2*m[0])-1
+            def order_mlsdc(k): return min(k, 2*m[0])-1
+        else:
+            def order_sdc(k): return min(k, m[0]+1)-1
+            def order_mlsdc(k): return min(k, m[0]+1)-1
 
     solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_uend, fname_errors)
-    plot_errors(fname_errors, figname=figname, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
+#    plot_errors(fname_errors, figname=None, order_sdc=order_sdc, order_mlsdc=order_mlsdc)
 
 
 if __name__ == "__main__":
-    for fig in range(1,5):
-        main()
+#    for fig in range(3,7):
+#        main()
+    fig = 0
+    main()

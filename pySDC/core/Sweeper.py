@@ -286,8 +286,7 @@ class sweeper(object):
         elif L.params.residual_type == 'last_rel':
             L.status.residual = res_norm[-1] / abs(L.u[0])
         else:
-            raise ParameterError(f'residual_type = {L.params.residual_type} not implemented, choose '
-                                 f'full_abs, last_abs, full_rel or last_rel instead')
+            raise ParameterError(f'residual_type = {L.params.residual_type} not implemented, choose full_abs, last_abs, full_rel or last_rel instead')
 
         # indicate that the residual has seen the new values
         L.status.updated = False
