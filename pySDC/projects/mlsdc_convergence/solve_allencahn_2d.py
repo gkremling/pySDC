@@ -46,7 +46,7 @@ def setup_parameters(restol, maxiter, initial_guess, m, n, freq, eps):
     problem_params['newton_tol'] = 1E-13
     problem_params['lin_tol'] = 1E-13
     problem_params['lin_maxiter'] = 100
-    problem_params['interval'] = (0.,1.)  # -0.5,0.5
+    problem_params['interval'] = (0.,1.)
     problem_params['nvars'] = n
     problem_params['freq'] = freq
     problem_params['eps'] = eps
@@ -112,7 +112,7 @@ def run_reference(nsteps_arr, nnodes, nvars, freq=0.25, eps=0.04):
         # save solution
         L = controller.MS[0].levels[0]
         nodes = [0]
-        nodes.extend(L.sweep.coll.nodes)
+        nodes.extend(L.sweep.coll.nodes)  # -0.5,0.5
 
         sol[nsteps] = [[], []]
         for j, node in enumerate(nodes):
@@ -295,9 +295,10 @@ def main():
 
     respath = "data/errors_allencahn_2d_"
     figpath = "figures/errors_allencahn_2d_"
-    figoption = ["spread", "spread_dxbig", "spread_psmall", "random", "spread_freqhigh", "linear"]
+    figoption = ["spread", "spread_dxbig", "spread_psmall", "random", "spread_freqhigh", "linear",
+                 "time_Mhigh", "time_Mlow", "time_Mlow_dtsmaller"]
 
-    if fig in range(1,7):
+    if fig in range(1,10):
         figname = figpath + figoption[fig-1] + ".pdf"
         fname_errors = respath  + figoption[fig-1] + ".pickle"
         if fig == 1:
@@ -337,6 +338,27 @@ def main():
 #            nsteps_arr = [2**i for i in range(16,20)]
             def order_sdc(k): return k
             def order_mlsdc(k): return 2*k
+        elif fig == 7:
+            # coarsening in time with high M_H (= interpolation order p)
+            m = [6,4]
+            n = [(32,32), (32,32)]
+            nsteps_arr = [2**i for i in range(10,14)]
+            def order_sdc(k): return k
+            def order_mlsdc(k): return 2*k
+        elif fig == 8:
+            # coarsening in time with low M_H (= interpolation order p)
+            m = [8,2]
+            n = [(32,32), (32,32)]
+            nsteps_arr = [2**i for i in range(10,14)]
+            def order_sdc(k): return k
+            def order_mlsdc(k): return 2*k
+        elif fig == 9:
+            # coarsening in time with low M_H (= interpolation order p) but smaller dt
+            m = [8,2]
+            n = [(32,32), (32,32)]
+            nsteps_arr = [2**i for i in range(11,15)]
+            def order_sdc(k): return k
+            def order_mlsdc(k): return 2*k
     else:
         # whatsoever
 #        init_val = "random"
@@ -362,5 +384,5 @@ def main():
 
 
 if __name__ == "__main__":
-    for fig in range(1,5):
+    for fig in range(7,8):
         main()

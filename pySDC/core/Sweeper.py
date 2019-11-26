@@ -241,13 +241,11 @@ class sweeper(object):
                 L.u[m] = P.dtype_u(L.u[0])
                 L.f[m] = P.eval_f(L.u[m], L.time + L.dt * self.coll.nodes[m - 1])
             # start with zero everywhere
+            elif self.params.initial_guess == 'zero':
+                L.u[m] = P.dtype_u(init=P.init, val=0.0)
+                L.f[m] = P.dtype_f(init=P.init, val=0.0)
             else:
-<<<<<<< HEAD
-                L.u[m] = P.dtype_u(init=P.init, val=0)
-                L.f[m] = P.dtype_f(init=P.init, val=0)
-=======
                 raise ParameterError('initial_guess option {self.params.initial_guess} not implemented')
->>>>>>> tested some things
 
         # indicate that this level is now ready for sweeps
         L.status.unlocked = True
@@ -279,9 +277,6 @@ class sweeper(object):
             res_norm.append(abs(res[m]))
 
         # find maximal residual over the nodes
-<<<<<<< HEAD
-        L.status.residual = max(res_norm)
-=======
         if L.params.residual_type == 'full_abs':
             L.status.residual = max(res_norm)
         elif L.params.residual_type == 'last_abs':
@@ -291,8 +286,8 @@ class sweeper(object):
         elif L.params.residual_type == 'last_rel':
             L.status.residual = res_norm[-1] / abs(L.u[0])
         else:
-            raise ParameterError(f'residual_type = {L.params.residual_type} not implemented, choose full_abs, last_abs, full_rel or last_rel instead')
->>>>>>> maaany changes, didn't commit for a long while...
+            raise ParameterError(f'residual_type = {L.params.residual_type} not implemented, choose '
+                                 f'full_abs, last_abs, full_rel or last_rel instead')
 
         # indicate that the residual has seen the new values
         L.status.updated = False

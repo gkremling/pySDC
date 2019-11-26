@@ -184,12 +184,15 @@ def main():
     nsteps_arr = [2**i for i in range(2,6)]  # 3,8
 
     only_uend = True
-
-    path = "figures/errors_auzinger_"
-    figdict = ["spread", "spread_Msmall", "spread_Msmall_dtsmall", "random"]
+    
+    respath = "data/errors_auzinger_"
+    figpath = "figures/errors_auzinger_"
+    
+    figoption = ["spread", "spread_Msmall", "spread_Msmall_dtsmall", "random"]
 
     if fig in range(1,5):
-        figname = path + figdict[fig-1] + ".pdf"
+        figname = figpath + figoption[fig-1] + ".pdf"
+        fname_errors = respath  + figoption[fig-1] + ".pickle"
         if fig == 1:
             def order_sdc(n): return min(n, 2*m[0])-1
             def order_mlsdc(n): return min(2*n, 2*m[0])-1
