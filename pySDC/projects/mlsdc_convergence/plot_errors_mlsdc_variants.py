@@ -97,8 +97,9 @@ def plot_errors_mlsdc_vars(fname_errors, titles, figname, order_mlsdc, order_lab
 
 if __name__ == "__main__":
     ivp = "allencahn_2d_space"
-#    ivp = "allencahn_2d_time"
 #    ivp = "heat1d"
+    
+#    ivp = "allencahn_2d_time"
 #    ivp = "auzinger"
     
     if ivp == "allencahn_2d_space":
@@ -114,17 +115,6 @@ if __name__ == "__main__":
                                 order_mlsdc = lambda k: [2*k, k, k, k],
                                 order_labels = ["2k", "k", "k", "k"])
         
-    elif ivp == "allencahn_2d_time":
-        plot_errors_mlsdc_vars( fname_errors = ["data/errors_allencahn_2d_time_Mhigh.pickle",
-                                                "data/errors_allencahn_2d_time_Mlow.pickle",
-                                                "data/errors_allencahn_2d_time_Mlow_dtsmaller.pickle"], 
-                                titles = [r"\textbf{(a)} optimal parameters",
-                                          r"\textbf{(b)} lower interpolation order $p = M_H$",
-                                          r"\textbf{(c)} lower interpolation order p and smaller $\Delta t$"],
-                                figname = "figures/errors_allencahn_2d_time.pdf",
-                                order_mlsdc = lambda k: [2*k, 2*k, 2*k],
-                                order_labels = ["2k", "2k", "2k"])
-        
     elif ivp == "heat1d":
         plot_errors_mlsdc_vars( fname_errors = ["data/errors_heat1d_spread.pickle",
                                                 "data/errors_heat1d_spread_dxbig.pickle",
@@ -137,6 +127,19 @@ if __name__ == "__main__":
                                 figname = "figures/errors_heat1d.pdf", 
                                 order_mlsdc = lambda k: np.array([2*k, k, k, k])-1,
                                 order_labels = ["2k-1", "k-1", "k-1", "k-1"])
+        
+        
+        
+    elif ivp == "allencahn_2d_time":
+        plot_errors_mlsdc_vars( fname_errors = ["data/errors_allencahn_2d_time_Mhigh.pickle",
+                                                "data/errors_allencahn_2d_time_Mlow.pickle",
+                                                "data/errors_allencahn_2d_time_Mlow_dtsmaller.pickle"], 
+                                titles = [r"\textbf{(a)} optimal parameters",
+                                          r"\textbf{(b)} lower interpolation order $p = M_H$",
+                                          r"\textbf{(c)} lower interpolation order p and smaller $\Delta t$"],
+                                figname = "figures/errors_allencahn_2d_time.pdf",
+                                order_mlsdc = lambda k: [2*k, 2*k, 2*k],
+                                order_labels = ["2k", "2k", "2k"])
         
     elif ivp == "auzinger":
         plot_errors_mlsdc_vars( fname_errors = ["data/errors_auzinger_spread.pickle",

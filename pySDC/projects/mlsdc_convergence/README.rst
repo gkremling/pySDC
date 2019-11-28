@@ -21,5 +21,5 @@ Other files
 How to
 ------
 
-- execute ``solve_heat1d.py`` or ``solve_allencahn_2d.py`` to generate the numerical results for the respective test equation (fig numbers 1 to 4 are the ones illustrated in the paper, with fig=0 you may also choose other arbitrary parameters and have a look at the corresponding results)
-- (afterwards) execute ``plot_errors_mlsdc_variants.py`` to generate the plots appearing in the paper (choose the desired IVP at the beginning of the the main-function by commenting/uncommenting the respective line, you can easily change the used data files, subplot titles and expected orders)
+- execute ``solve_heat1d.py`` or ``solve_allencahn_2d.py`` to generate the numerical results for the respective test equation: fig numbers 1 to 4 generate the results illustrated in the paper, with fig=0 you may also choose other arbitrary parameters and have a look at the corresponding results (for allencahn fig numbers 7 to 9 use MLSDC with coarsening in time)
+- (afterwards) execute ``plot_errors_mlsdc_variants.py`` to generate the plots appearing in the paper: choose the desired IVP at the beginning of the the main-function by commenting/uncommenting the respective line, you can easily change the used data files, subplot titles and expected orders

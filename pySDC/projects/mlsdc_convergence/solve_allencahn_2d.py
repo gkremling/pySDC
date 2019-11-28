@@ -347,14 +347,14 @@ def main():
             def order_mlsdc(k): return 2*k
         elif fig == 8:
             # coarsening in time with low M_H (= interpolation order p)
-            m = [8,2]
+            m = [6,2]
             n = [(32,32), (32,32)]
             nsteps_arr = [2**i for i in range(10,14)]
             def order_sdc(k): return k
             def order_mlsdc(k): return 2*k
         elif fig == 9:
             # coarsening in time with low M_H (= interpolation order p) but smaller dt
-            m = [8,2]
+            m = [6,2]
             n = [(32,32), (32,32)]
             nsteps_arr = [2**i for i in range(11,15)]
             def order_sdc(k): return k
