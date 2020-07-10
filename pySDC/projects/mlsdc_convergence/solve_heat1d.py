@@ -207,11 +207,18 @@ def solve_heat1d(m, n, iorder, nu, freq, init_val, niter_arr, nsteps_arr, only_u
 #            print("MLSDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_mlsdc[nsteps], order))
 
     # save results in pickle files (needed to plot results)
-    fout = open(fname_errors, "wb")
+    fout = open(fname_errors[0], "wb")
     if only_uend:
-        pickle.dump([error_uend_sdc, error_uend_mlsdc], fout)
+        pickle.dump(error_uend_sdc, fout)
     else:
-        pickle.dump([error_ode_sdc, error_ode_mlsdc], fout)
+        pickle.dump(error_ode_sdc, fout)
+    fout.close()
+    
+    fout = open(fname_errors[1], "wb")
+    if only_uend:
+        pickle.dump(error_uend_mlsdc, fout)
+    else:
+        pickle.dump(error_ode_mlsdc, fout)
     fout.close()
 
     print("results saved in: {}".format(fname_errors))
@@ -238,11 +245,12 @@ def main():
     
     respath = "data/errors_heat1d_"
     figpath = "figures/errors_heat1d_"
-    figoption = ["spread", "spread_dxbig", "spread_psmall", "random", "spread_freqhigh", "temp_discr", "temp_discr_uend"]
+    figoption = ["optimal", "dxbig", "psmall", "random", "freqhigh", "temp_discr", "temp_discr_uend"]
 
     if 1 <= fig and fig <= 7:
         figname = figpath + figoption[fig-1] + ".pdf"
-        fname_errors = respath + figoption[fig-1] + ".pickle"
+        prefix = respath  + figoption[fig-1] 
+        fname_errors = [prefix + "-sdc.pickle", prefix + "-mlsdc.pickle"]
         
         if fig == 1:
             # optimal params: dx small, p high, init guess smooth

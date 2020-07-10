@@ -2,16 +2,17 @@ Convergence Analysis for MLSDC
 ==============================
 
 This project investigates the impact of the convergence results described in the paper "Convergence Analysis for Multi-level Spectral Deferred Corrections".
-We use the 1D heat equation as well as the 2D Allen Cahn equation to show how MLSDC converges for a linear/non-linear PDE.
+We use the 1D heat equation, the 2D Allen Cahn equation and Auzinger's ODE to show how MLSDC converges for a linear/non-linear PDE/ODE.
 
 Test equations and figure creation
 ----------------------------------
 
 - ``solve_heat1d.py``: Here, MLSDC is applied to the 1D heat equation with different method parameters. In particular, the tests include an example with optimal parameter selection (according to theorem 5 in the paper) and three examples with individual changes from this resulting in a lower convergence order. The results are saved in individual files in the data folder.
 - ``solve_allencahn_2d.py``: Here, MLSDC is applied to the 2D Allen Cahn equation with different method parameters. As for the heat equation, the tests include an example with optimal parameter selection (according to theorem 5 in the paper) and three examples with individual changes from this resulting in a lower convergence order. The results are saved in individual files in the data folder.
+- ``solve_auzinger.py``: Here, MLSDC is applied to the Auzinger's equation with different method parameters. As for the other two test cases, the tests include an example with optimal parameter selection (this time according to the ODE version of theorem 5 given by equation (34) in the paper) and three examples with individual changes from this resulting in a lower convergence order. The results are saved in individual files in the data folder.
 
 - ``plot_errors.py``: Plots the results of a single test example. Both SDC and MLSDC errors are graphically illustrated and can be compared.
-- ``plot_errors_mlsdc_variants.py``: Plots the results of various examples in one figure. Only the MLSDC errors are graphically illustrated and compared.
+- ``plot_errors_mlsdc_variants.py``: Plots the results of various examples in one figure. All errors from SDC and MLSDC are graphically illustrated and compared.
 
 Other files
 ----------- 
@@ -21,5 +22,5 @@ Other files
 How to
 ------
 
-- execute ``solve_heat1d.py`` or ``solve_allencahn_2d.py`` to generate the numerical results for the respective test equation: fig numbers 1 to 4 generate the results illustrated in the paper, with fig=0 you may also choose other arbitrary parameters and have a look at the corresponding results (for allencahn fig numbers 7 to 9 use MLSDC with coarsening in time)
+- execute ``solve_heat1d.py``, ``solve_allencahn_2d.py`` or ``solve_auzinger.py`` to generate the numerical results for the respective test equation: fig numbers 1 to 4 generate the results illustrated in the paper, with fig=0 you may also choose other arbitrary parameters and have a look at the corresponding results (for allencahn fig numbers 7 to 9 use MLSDC with coarsening in time)
 - (afterwards) execute ``plot_errors_mlsdc_variants.py`` to generate the plots appearing in the paper: choose the desired IVP at the beginning of the the main-function by commenting/uncommenting the respective line, you can easily change the used data files, subplot titles and expected orders

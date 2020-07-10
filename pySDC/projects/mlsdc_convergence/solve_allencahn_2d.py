@@ -96,8 +96,10 @@ def run_reference(nsteps_arr, nnodes, nvars, freq=0.25, eps=0.04):
         # set time step (delta t)
         dt = 1./nsteps
         description['level_params']['dt'] = dt
+        
+        # Tend = t0 + dt                  # only one time step is made (LTE / consistency)
+        Tend = t0 + 20./nsteps_arr[-1]  # several time steps are made (convergence)
 
-        Tend = t0+dt
 
         # instantiate the controller
         controller = controller_nonMPI(num_procs=1, controller_params=controller_params, description=description)
@@ -137,7 +139,7 @@ def run_reference(nsteps_arr, nnodes, nvars, freq=0.25, eps=0.04):
         iter_counts = sort_stats(filtered_stats, sortby='time')
 
         for item in iter_counts:
-            out = 'Number of iterations at time %4.2f: %2i' % item
+            out = 'Number of iterations at time %4.10f: %2i' % item
             print(out)
 
     fout = open("data/sol_allencahn.pickle", "wb")
@@ -193,7 +195,8 @@ def solve_allencahn(m, n, iorder, freq, eps, initial_guess, niter_arr, nsteps_ar
             description_mlsdc['level_params']['dt'] = dt
 
             # set end of time interval (only one time step is made)
-            Tend = t0 + dt
+            # Tend = t0 + dt                  # only one time step is made (LTE / consistency)
+            Tend = t0 + 20./nsteps_arr[-1]  # several time steps are made (convergence)
 
             # print current parameters
             print('niter: %d\tnsteps: %e' % (niter, 1./nsteps))
@@ -221,13 +224,13 @@ def solve_allencahn(m, n, iorder, freq, eps, initial_guess, niter_arr, nsteps_ar
 
             # compute, save and print ode error and resulting order in dt
             uex = np.array(sol[nsteps][1])
-            err_sdc = np.max(np.abs(uex - u_num_sdc))
+            err_sdc = np.linalg.norm(uex - u_num_sdc)
             error_sdc[(niter, nsteps)] = err_sdc
             order_sdc = 0 if i == 0 or error_sdc[(niter, nsteps_arr[i-1])] == 0 else \
                 log(error_sdc[(niter, nsteps_arr[i-1])]/err_sdc)/log(nsteps/nsteps_arr[i-1])
             print('SDC:\tu_ode:\terror: %8.6e\torder:%4.2f' % (err_sdc, order_sdc))
 
-            err_mlsdc = np.max(np.abs(uex - u_num_mlsdc))
+            err_mlsdc = np.linalg.norm(uex - u_num_mlsdc)
             error_mlsdc[(niter, nsteps)] = err_mlsdc
             order_mlsdc = log(error_mlsdc[(niter, nsteps_arr[i-1])]/err_mlsdc) / \
                 log(nsteps/nsteps_arr[i-1]) if i > 0 else 0
@@ -269,8 +272,11 @@ def solve_allencahn(m, n, iorder, freq, eps, initial_guess, niter_arr, nsteps_ar
 #            print("MLSDC:\tdt: %.10f\terror_k: %8.6e\torder:%4.2f" % (1./nsteps, error_k_mlsdc[nsteps], order))
 
     # save results in pickle files (needed to plot results)
-    fout = open(fname_errors, "wb")
-    pickle.dump([error_sdc, error_mlsdc], fout)
+    fout = open(fname_errors[0], "wb")
+    pickle.dump(error_sdc, fout)
+    fout.close()
+    fout = open(fname_errors[1], "wb")
+    pickle.dump(error_mlsdc, fout)
     fout.close()
 
     print("results saved in: {}".format(fname_errors))
@@ -291,38 +297,40 @@ def main():
     
     # set number of iterations and time steps which shall be analyzed
     niter_arr = range(1,6) # 3,4
-    nsteps_arr = [2**i for i in range(9,13)] # 11,12
+    nsteps_arr = [2**i for i in range(8,12)] # 11,12
 
     respath = "data/errors_allencahn_2d_"
     figpath = "figures/errors_allencahn_2d_"
-    figoption = ["spread", "spread_dxbig", "spread_psmall", "random", "spread_freqhigh", "linear",
+    figoption = ["optimal", "dxbig", "psmall", "random", "freqhigh", "linear",
                  "time_Mhigh", "time_Mlow", "time_Mlow_dtsmaller"]
 
     if fig in range(1,10):
         figname = figpath + figoption[fig-1] + ".pdf"
-        fname_errors = respath  + figoption[fig-1] + ".pickle"
+        prefix = respath  + figoption[fig-1] 
+        fname_errors = [prefix + "-sdc.pickle", prefix + "-mlsdc.pickle"]
+        
         if fig == 1:
             # optimal params: dx small, p high, init guess smooth
-            def order_sdc(k): return k
-            def order_mlsdc(k): return 2*k
+            def order_sdc(k): return k-1
+            def order_mlsdc(k): return 2*k-1
         elif fig == 2:
             # dx big
             n = [(32,32),(16,16)]
             nsteps_arr = [2**i for i in range(12,16)]
-            def order_sdc(k): return k
-            def order_mlsdc(k): return k
+            def order_sdc(k): return k-1
+            def order_mlsdc(k): return k-1
         elif fig == 3:
             # p low
             iorder = 2
             nsteps_arr = [2**i for i in range(15,19)]
-            def order_sdc(k): return k
-            def order_mlsdc(k): return k
+            def order_sdc(k): return k-1
+            def order_mlsdc(k): return k-1
         elif fig == 4:
             # random initial guess
             initial_guess = "random"
             nsteps_arr = [2**i for i in range(20,25)]
-            def order_sdc(k): return k
-            def order_mlsdc(k): return k
+            def order_sdc(k): return k-1
+            def order_mlsdc(k): return k-1
         elif fig == 5:
             # initial guess not smooth
             freq = 24

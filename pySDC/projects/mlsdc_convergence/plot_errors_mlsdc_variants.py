@@ -15,7 +15,6 @@ from matplotlib import rc
 rc('font',**{'family':'Helvetica','size':18})
 rc('text', usetex=True)
 
-
 def plot_errors_mlsdc_vars(fname_errors, titles, figname, order_mlsdc, order_labels):
     # load data
     error = []
@@ -29,16 +28,18 @@ def plot_errors_mlsdc_vars(fname_errors, titles, figname, order_mlsdc, order_lab
     marker = ['x', 'd', 'o', '^', 's']
 
     # create figure
-    f, axes = plt.subplots(2, 2, sharex=False, sharey=True, figsize=(15, 12))
+    f, axes = plt.subplots(3, 2, sharex=False, sharey=True, figsize=(15, 18))
+    
+    if len(error) == 5:
+        axes[-1, -1].axis('off')
     
     # determine ylims
-    ymin = min([min([e for e in err[1].values() if isinstance(e, np.float64) and e>0]) for err in error])
-    ymax = max([max([e for e in err[1].values() if isinstance(e, np.float64) and e>0]) for err in error])
+    ymin = min([min([e for e in err.values() if isinstance(e, np.float64) and e>0]) for err in error])
+    ymax = max([max([e for e in err.values() if isinstance(e, np.float64) and e>0]) for err in error])
 
-    # create subplot for each variant of MLSDC
-    for i, err_arr in enumerate(error):
+    # create subplot for each variant of SDC and MLSDC
+    for i, err in enumerate(error):
         row, col = int(i/2), i%2    # row and column of subplot
-        err = err_arr[1]            # extract errors of MLSDC
         
         dt_arr = 1./np.array(err['nsteps_arr'])
 
@@ -64,7 +65,7 @@ def plot_errors_mlsdc_vars(fname_errors, titles, figname, order_mlsdc, order_lab
         axes[row, col].set_yticks(np.power(10., np.arange(-20, 3, 2)))
         axes[row, col].set_ylim([ymin/10, ymax*10000])
         
-        # create an individual legend declaring the order of the drwan lines
+        # create an individual legend declaring the order of the drawn lines
         handles, labels = axes[row,col].get_legend_handles_labels()
         axes[row, col].legend([handles[1]], [labels[1]], loc=1)
 
@@ -81,9 +82,11 @@ def plot_errors_mlsdc_vars(fname_errors, titles, figname, order_mlsdc, order_lab
 
     # create legend declaring number of iterations
     # reference: https://stackoverflow.com/questions/4700614/how-to-put-the-legend-out-of-the-plot
+    
     # at the bottom
     f.legend(handles[::2], labels[::2], loc=8, numpoints=1, ncol=5, fontsize=18)
-    plt.subplots_adjust(bottom=0.12)
+    plt.subplots_adjust(bottom=0.08)
+    
     # at the right
 #    axes[1].legend(numpoints=1, bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0, fontsize='small')
 
@@ -96,40 +99,70 @@ def plot_errors_mlsdc_vars(fname_errors, titles, figname, order_mlsdc, order_lab
 
 
 if __name__ == "__main__":
-    ivp = "allencahn_2d_space"
-#    ivp = "heat1d"
+    ivp = "heat1d"
+    # ivp = "allencahn_2d_space"
+    # ivp = "auzinger"
     
-#    ivp = "allencahn_2d_time"
-#    ivp = "auzinger"
+    # ivp = "allencahn_2d_time"
     
-    if ivp == "allencahn_2d_space":
-        plot_errors_mlsdc_vars( fname_errors = ["data/errors_allencahn_2d_spread.pickle",
-                                                "data/errors_allencahn_2d_spread_dxbig.pickle",
-                                                "data/errors_allencahn_2d_spread_psmall.pickle",
-                                                "data/errors_allencahn_2d_random.pickle"], 
-                                titles = [r"\textbf{(a)} optimal parameters",
-                                          r"\textbf{(b)} coarser grid spacing $\Delta$x",
-                                          r"\textbf{(c)} lower interpolation order p",
-                                          r"\textbf{(d)} random initial guess"],
-                                figname = "figures/errors_allencahn_2d.pdf",
-                                order_mlsdc = lambda k: [2*k, k, k, k],
-                                order_labels = ["2k", "k", "k", "k"])
-        
-    elif ivp == "heat1d":
-        plot_errors_mlsdc_vars( fname_errors = ["data/errors_heat1d_spread.pickle",
-                                                "data/errors_heat1d_spread_dxbig.pickle",
-                                                "data/errors_heat1d_spread_psmall.pickle",
-                                                "data/errors_heat1d_random.pickle"], 
-                                titles = [r"\textbf{(a)} optimal parameters",
-                                          r"\textbf{(b)} coarser grid spacing $\Delta$x",
-                                          r"\textbf{(c)} lower interpolation order p",
-                                          r"\textbf{(d)} random initial guess"],
+    
+    if ivp == "heat1d":
+        plot_errors_mlsdc_vars( fname_errors = ["data/errors_heat1d_optimal-sdc.pickle",
+                                                "data/errors_heat1d_random-sdc.pickle",
+                                                "data/errors_heat1d_optimal-mlsdc.pickle",
+                                                "data/errors_heat1d_dxbig-mlsdc.pickle",
+                                                "data/errors_heat1d_psmall-mlsdc.pickle",
+                                                "data/errors_heat1d_random-mlsdc.pickle"], 
+                                titles = [r"\textbf{(a)} SDC spread initial guess",
+                                          r"\textbf{(b)} SDC random initial guess",
+                                          r"\textbf{(c)} MLSDC optimal parameters",
+                                          r"\textbf{(d)} MLSDC coarser grid spacing $\Delta$x",
+                                          r"\textbf{(e)} MLSDC lower interpolation order p",
+                                          r"\textbf{(f)} MLSDC random initial guess"],
                                 figname = "figures/errors_heat1d.pdf", 
-                                order_mlsdc = lambda k: np.array([2*k, k, k, k])-1,
-                                order_labels = ["2k-1", "k-1", "k-1", "k-1"])
+                                order_mlsdc = lambda k: np.array([k, k, 2*k, k, k, k])-1,
+                                order_labels = ["k-1", "k-1", "2k-1", "k-1", "k-1", "k-1"])
+        
+        
+    
+    elif ivp == "allencahn_2d_space":
+        plot_errors_mlsdc_vars( fname_errors = ["data/errors_allencahn_2d_optimal-sdc.pickle",
+                                                "data/errors_allencahn_2d_random-sdc.pickle",
+                                                "data/errors_allencahn_2d_optimal-mlsdc.pickle",
+                                                "data/errors_allencahn_2d_dxbig-mlsdc.pickle",
+                                                "data/errors_allencahn_2d_psmall-mlsdc.pickle",
+                                                "data/errors_allencahn_2d_random-mlsdc.pickle"], 
+                                titles = [r"\textbf{(a)} SDC spread initial guess",
+                                          r"\textbf{(b)} SDC random initial guess",
+                                          r"\textbf{(c)} MLSDC optimal parameters",
+                                          r"\textbf{(d)} MLSDC coarser grid spacing $\Delta$x",
+                                          r"\textbf{(e)} MLSDC lower interpolation order p",
+                                          r"\textbf{(f)} MLSDC random initial guess"],
+                                figname = "figures/errors_allencahn_2d.pdf",
+                                order_mlsdc = lambda k: np.array([k, k, 2*k, k, k, k])-1,
+                                order_labels = ["k-1", "k-1", "2k-1", "k-1", "k-1", "k-1"])
         
         
         
+    elif ivp == "auzinger":
+        plot_errors_mlsdc_vars( fname_errors = ["data/errors_auzinger_optimal-sdc.pickle",
+                                                "data/errors_auzinger_random-sdc.pickle",
+                                                "data/errors_auzinger_optimal-mlsdc.pickle",
+                                                "data/errors_auzinger_dtbig-mlsdc.pickle",
+                                                "data/errors_auzinger_Msmall-mlsdc.pickle",
+                                                "data/errors_auzinger_random-mlsdc.pickle"], 
+                                titles = [r"\textbf{(a)} SDC spread initial guess",
+                                          r"\textbf{(b)} SDC random initial guess",
+                                          r"\textbf{(c)} MLSDC optimal parameters",
+                                          r"\textbf{(d)} MLSDC larger time step size $\Delta$t",
+                                          r"\textbf{(e)} MLSDC lower interpolation order $p$",
+                                          r"\textbf{(f)} MLSDC random initial guess"],
+                                figname = "figures/errors_auzinger.pdf",
+                                order_mlsdc = lambda k: np.array([k, k-1, 2*k, k, k+1, k-1]),
+                                order_labels = ["k", "k-1", "2k", "k", "k+1", "k-1"])
+    
+    
+    
     elif ivp == "allencahn_2d_time":
         plot_errors_mlsdc_vars( fname_errors = ["data/errors_allencahn_2d_time_Mhigh.pickle",
                                                 "data/errors_allencahn_2d_time_Mlow.pickle",
@@ -140,14 +173,4 @@ if __name__ == "__main__":
                                 figname = "figures/errors_allencahn_2d_time.pdf",
                                 order_mlsdc = lambda k: [2*k, 2*k, 2*k],
                                 order_labels = ["2k", "2k", "2k"])
-        
-    elif ivp == "auzinger":
-        plot_errors_mlsdc_vars( fname_errors = ["data/errors_auzinger_spread.pickle",
-                                                "data/errors_auzinger_spread_Msmall.pickle",
-                                                "data/errors_auzinger_spread_Msmall_dtsmall.pickle"], 
-                                titles = [r"\textbf{(a)} optimal parameters",
-                                          r"\textbf{(b)} lower interpolation order $p = M_H$",
-                                          r"\textbf{(c)} lower interpolation order p and smaller $\Delta t$"],
-                                figname = "figures/errors_auzinger.pdf",
-                                order_mlsdc = lambda k: np.array([2*k, 2*k, 2*k])-1,
-                                order_labels = ["2k-1", "2k-1", "2k-1"])
+     

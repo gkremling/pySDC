@@ -17,9 +17,13 @@ rc('text', usetex=True)
 
 
 def plot_errors(fname_errors, figname, order_sdc, order_mlsdc):
+    error = []
     # load data
-    fin = open(fname_errors, "rb")
-    error = pickle.load(fin)
+    fin = open(fname_errors[0], "rb")
+    error.append( pickle.load(fin) )
+    fin.close()
+    fin = open(fname_errors[1], "rb")
+    error.append( pickle.load(fin) )
     fin.close()
 
     # marker colors and styles
@@ -48,7 +52,7 @@ def plot_errors(fname_errors, figname, order_sdc, order_mlsdc):
 
             # obtained errors
             axes[i].plot(dt_arr, [err[(niter, n)] for n in err['nsteps_arr']], color=color[j],
-                         marker=marker[j], markersize=9, linestyle='None', label='k={}'.format(niter))
+                          marker=marker[j], markersize=9, linestyle='None', label='k={}'.format(niter))
 
             # expected lines
             if err['type'] == 'SDC':
@@ -72,10 +76,12 @@ def plot_errors(fname_errors, figname, order_sdc, order_mlsdc):
 
     # create legend declaring number of iterations
     # reference: https://stackoverflow.com/questions/4700614/how-to-put-the-legend-out-of-the-plot
+    
     # at the bottom
 #    handles, labels = axes[0].get_legend_handles_labels()
 #    f.legend(handles, labels, loc=8, numpoints=1, ncol=5)
 #    plt.subplots_adjust(bottom=0.25)
+    
     # at the right
     axes[1].legend(numpoints=1, bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0, fontsize='small')
 
@@ -88,5 +94,5 @@ def plot_errors(fname_errors, figname, order_sdc, order_mlsdc):
 
 
 if __name__ == "__main__":
-    plot_errors(fname_errors="data/errors_heat1d.pickle", figname="figures/errors_heat1d.png",
+    plot_errors(fname_errors="data/errors_auzinger_spread.pickle", figname=None,
                 order_sdc=lambda k: min(k, 2*5), order_mlsdc=lambda k: min(2*k, 2*5))
